@@ -3,7 +3,7 @@
     "target": "ES2020",
     "module": "Node16",
     "moduleResolution": "node16",
-    "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "./dist",
 
     "strict": true,
@@ -17,6 +17,6 @@
 
     "verbatimModuleSyntax": false
   },
-  "include": ["src"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

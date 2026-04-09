@@ -6,7 +6,7 @@
 
 Establish a stable development environment and project structure that allows immediate feature development.
 
-#### 1. Project Initialization
+#### 1. Project Initialization(Finished)
 
 - Created root project structure:
   - client/
@@ -17,7 +17,7 @@ Establish a stable development environment and project structure that allows imm
 
 ---
 
-#### 2. Frontend Setup (Next.js)
+#### 2. Frontend Setup (Next.js)(Finished)
 
 - Next.js (App Router + TypeScript) initialized
 - Tailwind CSS configured
@@ -25,7 +25,7 @@ Establish a stable development environment and project structure that allows imm
 
 ---
 
-#### 3. Backend Setup (Express + TypeScript)
+#### 3. Backend Setup (Express + TypeScript)(Finished)
 
 - Express server initialized
 - Middleware configured:
@@ -37,7 +37,7 @@ Establish a stable development environment and project structure that allows imm
 
 ---
 
-#### 4. TypeScript Configuration
+#### 4. TypeScript Configuration(Finished)
 
 - Resolved module system conflicts
 - Configured:
@@ -47,7 +47,7 @@ Establish a stable development environment and project structure that allows imm
 
 ---
 
-#### 5. Prisma Initialization
+#### 5. Prisma Initialization(Finished)
 
 - Prisma installed and initialized
 - `schema.prisma` created
@@ -86,38 +86,171 @@ Establish a stable development environment and project structure that allows imm
 
 ---
 
-### Next Step (Week 2 Preview)
-
 ## Week 2 — Database Design & Core Models
 
-Planned tasks:
+### Objective
 
-- Design Prisma schema
-- Implement core models:
-  - Restaurant
-  - AdminUser
-  - RestaurantTable
-  - Category
-  - MenuItem
-  - CustomerOrder
-  - CustomerOrderItem
-  - PrintJob
+Design a scalable and extensible database structure supporting QR ordering, admin operations, printing workflow, and future analytics.
+
+---
+
+## Day 1 — Schema Strategy & Entity Mapping(Comleted)
+
+### Goal
+
+Define the full database structure conceptually before implementation.
+
+### Tasks
+
+- Identify core entities
+- Define responsibility of each entity
+- Draft relationships between entities
+- Define order snapshot strategy
+- Consider future analytics requirements
+
+### Expected Output
+
+- Entity map
+- Relationship draft
+- Design notes
+
+---
+
+## Day 2 — Core Store Models
+
+### Goal
+
+Implement base entities for restaurant and admin structure.
+
+### Tasks
+
+- Define `Restaurant`
+- Define `AdminUser`
+- Define `RestaurantTable`
+- Establish relations between entities
+- Define base fields and constraints
+
+### Expected Output
+
+- Prisma schema (Part 1)
+- Core relations validated
+
+---
+
+## Day 3 — Menu Models
+
+### Goal
+
+Design menu-related structure.
+
+### Tasks
+
+- Define `Category`
+- Define `MenuItem`
+- Add menu metadata (price, description, image)
+- Define ordering and visibility fields
+- Link menu to restaurant and category
+
+### Expected Output
+
+- Prisma schema (Part 2)
+- Menu structure finalized
+
+---
+
+## Day 4 — Order Models
+
+### Goal
+
+Design order processing structure.
+
+### Tasks
+
+- Define `CustomerOrder`
+- Define `CustomerOrderItem`
+- Add order status fields
+- Add payment status fields
+- Add print status fields
+- Implement snapshot fields (menu name, price)
+- Define total calculation structure
+
+### Expected Output
+
+- Prisma schema (Part 3)
+- Order flow-ready structure
+
+---
+
+## Day 5 — Print Model & Audit Fields
+
+### Goal
+
+Support printing workflow and tracking.
+
+### Tasks
+
+- Define `PrintJob`
+- Add print status tracking
+- Add retry and failure handling fields
+- Define relation with orders and admin actions
+- Standardize audit fields (`createdAt`, `updatedAt`)
+
+### Expected Output
+
+- Prisma schema (Part 4)
+- Print-ready data structure
+
+---
+
+## Day 6 — Migration & Database Reflection
+
+### Goal
+
+Apply schema to actual database.
+
+### Tasks
+
+- Validate Prisma schema
 - Run initial migration
-- Seed test data
+- Verify tables in database
+- Verify using Prisma Studio
+
+### Expected Output
+
+- Initial migration completed
+- Physical database tables created
 
 ---
 
-### Notes
+## Day 7 — Seed Data Setup
 
-- Current database is empty (expected state)
-- `prisma db pull` error is expected due to no tables
-- Next step is schema-first approach (NOT introspection)
+### Goal
+
+Prepare initial dataset for development and testing.
+
+### Tasks
+
+- Define seed strategy
+- Create sample restaurant
+- Create sample admin user
+- Create sample tables
+- Create sample categories and menu items
+- Execute seed script
+
+### Expected Output
+
+- Testable dataset available
+- Ready for feature development
 
 ---
 
-### End of Week 1 Definition of Done
+## Week 2 — Definition of Done
 
-- Development environment fully set up
-- Server and client running independently
-- Database connection established
-- Ready to start feature implementation
+- Prisma schema fully implemented
+- Core models created
+- Migration successfully applied
+- Database verified via Prisma Studio
+- Seed data inserted
+- System ready for feature development
+
+---
