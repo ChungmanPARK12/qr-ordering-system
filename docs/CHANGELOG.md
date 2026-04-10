@@ -42,3 +42,15 @@ Project initialization and environment setup completed.
 
 - Database schema successfully synced
 - Core backend structure ready for feature development
+
+## Day 3 — Menu Models
+
+- Implemented `Category` and `MenuItem` models in Prisma schema
+- Added relations: Restaurant → Category → MenuItem
+- Introduced ordering and visibility fields (`sortOrder`, `isVisible`, `isSoldOut`)
+- Standardized audit fields with `@default(now())` and `@updatedAt`
+- Applied migration and synced database
+- Inserted sample data via Prisma Studio
+- Verified relations using SQL queries and JOINs
+
+Status: Completed

@@ -116,7 +116,7 @@ Define the full database structure conceptually before implementation.
 
 ---
 
-## Day 2 — Core Store Models
+## Day 2 — Core Store Models(Completed)
 
 ### Goal
 
@@ -137,7 +137,7 @@ Implement base entities for restaurant and admin structure.
 
 ---
 
-## Day 3 — Menu Models
+## Day 3 — Menu Models(Completed)
 
 ### Goal
 

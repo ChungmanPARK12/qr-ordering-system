@@ -5,7 +5,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-
 }
 
 enum AdminRole {
@@ -19,54 +18,102 @@ enum TableStatus {
 }
 
 model Restaurant {
-  id          String            @id @default(cuid())
+  id          String  @id @default(cuid())
   name        String
-  slug        String            @unique
+  slug        String  @unique
   description String?
   phone       String?
   address     String?
-  isActive    Boolean           @default(true)
+  isActive    Boolean @default(true)
 
-  adminUsers  AdminUser[]
-  tables      RestaurantTable[]
+  adminUsers AdminUser[]
+  tables     RestaurantTable[]
+  categories Category[]
+  menuItems  MenuItem[]
 
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model AdminUser {
-  id           String      @id @default(cuid())
-  email        String      @unique
+  id           String    @id @default(cuid())
+  email        String    @unique
   passwordHash String
   name         String
-  role         AdminRole   @default(STAFF)
-  isActive     Boolean     @default(true)
+  role         AdminRole @default(STAFF)
+  isActive     Boolean   @default(true)
 
   restaurantId String
-  restaurant   Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
 
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@index([restaurantId])
 }
 
 model RestaurantTable {
-  id           String       @id @default(cuid())
-  name         String
-  qrCode       String?      @unique
-  tableNumber  Int
-  capacity     Int?
-  status       TableStatus  @default(ACTIVE)
-  isActive     Boolean      @default(true)
+  id          String      @id @default(cuid())
+  name        String
+  qrCode      String?     @unique
+  tableNumber Int
+  capacity    Int?
+  status      TableStatus @default(ACTIVE)
+  isActive    Boolean     @default(true)
 
   restaurantId String
-  restaurant   Restaurant   @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
 
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@unique([restaurantId, tableNumber])
   @@unique([restaurantId, name])
   @@index([restaurantId])
+}
+
+model Category {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  sortOrder   Int     @default(0)
+  isVisible   Boolean @default(true)
+
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  menuItems MenuItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([restaurantId, name])
+  @@index([restaurantId])
+  @@index([restaurantId, sortOrder])
+}
+
+model MenuItem {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  price       Int
+  imageUrl    String?
+  sortOrder   Int     @default(0)
+  isVisible   Boolean @default(true)
+  isSoldOut   Boolean @default(false)
+
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([categoryId, name])
+  @@index([restaurantId])
+  @@index([categoryId])
+  @@index([restaurantId, categoryId])
+  @@index([restaurantId, sortOrder])
 }
