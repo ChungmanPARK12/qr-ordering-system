@@ -17,6 +17,29 @@ enum TableStatus {
   INACTIVE
 }
 
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  READY
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PrintStatus {
+  NOT_REQUIRED
+  PENDING
+  PRINTED
+  FAILED
+}
+
 model Restaurant {
   id          String  @id @default(cuid())
   name        String
@@ -26,10 +49,11 @@ model Restaurant {
   address     String?
   isActive    Boolean @default(true)
 
-  adminUsers AdminUser[]
-  tables     RestaurantTable[]
-  categories Category[]
-  menuItems  MenuItem[]
+  adminUsers     AdminUser[]
+  tables         RestaurantTable[]
+  categories     Category[]
+  menuItems      MenuItem[]
+  customerOrders CustomerOrder[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -61,8 +85,9 @@ model RestaurantTable {
   status      TableStatus @default(ACTIVE)
   isActive    Boolean     @default(true)
 
-  restaurantId String
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurantId   String
+  restaurant     Restaurant      @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  customerOrders CustomerOrder[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -108,6 +133,8 @@ model MenuItem {
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
+  orderItems CustomerOrderItem[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
@@ -116,4 +143,56 @@ model MenuItem {
   @@index([categoryId])
   @@index([restaurantId, categoryId])
   @@index([restaurantId, sortOrder])
+}
+
+model CustomerOrder {
+  id            String        @id @default(cuid())
+  orderNumber   String
+  orderStatus   OrderStatus   @default(PENDING)
+  paymentStatus PaymentStatus @default(UNPAID)
+  printStatus   PrintStatus   @default(NOT_REQUIRED)
+
+  customerNote   String?
+  subtotal       Int
+  discountAmount Int     @default(0)
+  totalAmount    Int
+
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  tableId String
+  table   RestaurantTable @relation(fields: [tableId], references: [id], onDelete: Restrict)
+
+  items CustomerOrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([restaurantId, orderNumber])
+  @@index([restaurantId])
+  @@index([tableId])
+  @@index([orderStatus])
+  @@index([paymentStatus])
+  @@index([printStatus])
+}
+
+model CustomerOrderItem {
+  id                String  @id @default(cuid())
+  quantity          Int
+  menuNameSnapshot  String
+  unitPriceSnapshot Int
+  lineTotal         Int
+  customerNote      String?
+
+  customerOrderId String
+  customerOrder   CustomerOrder @relation(fields: [customerOrderId], references: [id], onDelete: Cascade)
+
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([customerOrderId])
+  @@index([menuItemId])
 }

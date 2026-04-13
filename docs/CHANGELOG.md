@@ -54,3 +54,48 @@ Project initialization and environment setup completed.
 - Verified relations using SQL queries and JOINs
 
 Status: Completed
+
+## [2026-04-13] - [2026-04-15] — Week 1
+
+## Day 4 — Order Models
+
+### Added
+
+- Implemented `CustomerOrder` model (order header)
+- Implemented `CustomerOrderItem` model (order line items)
+- Added order-related enums:
+  - `OrderStatus`
+  - `PaymentStatus`
+  - `PrintStatus`
+
+### Updated
+
+- Connected relations:
+  - `Restaurant` → `CustomerOrder`
+  - `RestaurantTable` → `CustomerOrder`
+  - `MenuItem` → `CustomerOrderItem`
+
+### Design Decisions
+
+- Introduced snapshot fields:
+  - `menuNameSnapshot`
+  - `unitPriceSnapshot`
+- Added pricing structure:
+  - `subtotal`
+  - `discountAmount`
+  - `totalAmount`
+- Kept pricing as `Int` for initial consistency
+
+### Validation
+
+- Successfully created test order and order items
+- Verified all relations across:
+  - Restaurant ↔ Order
+  - Table ↔ Order
+  - Order ↔ OrderItem
+  - MenuItem ↔ OrderItem
+- Confirmed snapshot data remains unchanged after menu updates
+
+### Result
+
+- Order flow-ready database structure established
