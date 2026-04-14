@@ -99,3 +99,10 @@ Status: Completed
 ### Result
 
 - Order flow-ready database structure established
+
+## Day 5 — Print Model
+
+- Added `PrintJob` model and `PrintJobStatus` enum
+- Connected `CustomerOrder` → `PrintJob` (1:N)
+- Added retry and failure tracking fields
+- Verified schema and relations via Prisma Studio and SQL

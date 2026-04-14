@@ -158,7 +158,7 @@ Design menu-related structure.
 
 ---
 
-## Day 4 — Order Models
+## Day 4 — Order Models(Completed)
 
 ### Goal
 

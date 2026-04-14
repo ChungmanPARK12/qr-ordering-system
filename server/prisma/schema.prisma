@@ -40,6 +40,14 @@ enum PrintStatus {
   FAILED
 }
 
+enum PrintJobStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+  CANCELLED
+}
+
 model Restaurant {
   id          String  @id @default(cuid())
   name        String
@@ -69,6 +77,8 @@ model AdminUser {
 
   restaurantId String
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  printJobs PrintJob[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -163,7 +173,8 @@ model CustomerOrder {
   tableId String
   table   RestaurantTable @relation(fields: [tableId], references: [id], onDelete: Restrict)
 
-  items CustomerOrderItem[]
+  items     CustomerOrderItem[]
+  printJobs PrintJob[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -195,4 +206,28 @@ model CustomerOrderItem {
 
   @@index([customerOrderId])
   @@index([menuItemId])
+}
+
+model PrintJob {
+  id            String         @id @default(cuid())
+  status        PrintJobStatus @default(PENDING)
+  attemptCount  Int            @default(0)
+  maxAttempts   Int            @default(3)
+  failureReason String?
+  lastTriedAt   DateTime?
+  printedAt     DateTime?
+  failedAt      DateTime?
+
+  customerOrderId String
+  customerOrder   CustomerOrder @relation(fields: [customerOrderId], references: [id], onDelete: Cascade)
+
+  createdByAdminId String?
+  createdByAdmin   AdminUser? @relation(fields: [createdByAdminId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([customerOrderId])
+  @@index([createdByAdminId])
+  @@index([status])
 }
