@@ -106,3 +106,15 @@ Status: Completed
 - Connected `CustomerOrder` → `PrintJob` (1:N)
 - Added retry and failure tracking fields
 - Verified schema and relations via Prisma Studio and SQL
+
+### Checking status changes
+
+- Confirmed status separation using SQL join (`Order.printStatus` vs `PrintJob.status`)
+
+## Day 6
+
+- Current Prisma schema rechecked
+- Existing database tables and relations reconfirmed
+- Prisma Studio structure revalidated
+- Migration state reviewed
+- Ready for seed data setup

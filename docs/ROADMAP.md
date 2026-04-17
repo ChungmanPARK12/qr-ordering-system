@@ -181,7 +181,7 @@ Design order processing structure.
 
 ---
 
-## Day 5 — Print Model & Audit Fields
+## Day 5 — Print Model & Audit Fields(Completed)
 
 ### Goal
 
