@@ -202,7 +202,7 @@ Support printing workflow and tracking.
 
 ---
 
-## Day 6 — Migration & Database Reflection
+## Day 6 — Migration & Database Reflection(Completed)
 
 ### Goal
 

@@ -118,3 +118,17 @@ Status: Completed
 - Prisma Studio structure revalidated
 - Migration state reviewed
 - Ready for seed data setup
+
+## [2026-04-21] - [2026-04-25] Week 2 — Day 7
+
+### Changes
+
+- Added `prisma/seed.ts`
+- Implemented seed data (Restaurant, AdminUser, Table, Category, MenuItem)
+- Fixed Prisma Client generation & import issues
+- Applied Prisma 7 PostgreSQL adapter
+- Reset DB and executed seed successfully
+
+### Result
+
+- Database ready for development
