@@ -254,3 +254,189 @@ Prepare initial dataset for development and testing.
 - System ready for feature development
 
 ---
+
+## Week 3 — Client & Admin Menu Prototype
+
+### Objective
+
+Build both admin-side menu management and customer-side QR ordering flow using mock data.
+
+The goal is to validate real product behavior before implementing backend APIs.
+
+---
+
+## Day 1 — Admin Structure & Navigation Setup
+
+### Goal
+
+Set up the admin-side structure for menu management.
+
+### Tasks
+
+- Define admin screen structure
+- Set up navigation for admin flow
+- Create placeholder screens:
+  - Category management
+  - Menu management
+  - Option management
+- Prepare mock data structure for menu system
+
+### Expected Output
+
+- Admin navigation structure ready
+- Placeholder screens created
+
+---
+
+## Day 2 — Category & Menu Management
+
+### Goal
+
+Allow admin to create and manage categories and menu items.
+
+### Tasks
+
+- Create category list UI
+- Add category creation/edit/delete
+- Create menu item list UI
+- Add menu item creation/edit/delete
+- Add fields:
+  - name
+  - description
+  - price
+  - image placeholder
+  - visibility / sold-out status
+
+### Expected Output
+
+- Admin can manage categories and menu items using mock data
+
+---
+
+## Day 3 — Menu Options System
+
+### Goal
+
+Support flexible menu options for each item.
+
+### Tasks
+
+- Design option data structure:
+  - OptionGroup
+  - OptionItem
+- Implement option group UI:
+  - group name
+  - required / optional
+  - selection type (single / multiple)
+  - min/max selection
+- Implement option item UI:
+  - name
+  - additional price
+- Attach option groups to menu items
+
+### Expected Output
+
+- Admin can define flexible options for each menu item
+
+---
+
+## Day 4 — QR Entry & Table Context
+
+### Goal
+
+Create customer entry flow via QR scan.
+
+### Tasks
+
+- Build QR entry screen
+- Handle restaurant and table parameters
+- Store table context in client state
+- Display basic restaurant info
+- Handle invalid table cases
+
+### Expected Output
+
+- Customer can enter ordering flow with table context
+
+---
+
+## Day 5 — Menu List Screen
+
+### Goal
+
+Display categories and menu items to customers.
+
+### Tasks
+
+- Render category sections
+- Display menu items with mock data
+- Handle visibility and sold-out state
+- Apply sorting logic
+- Design clean list UI (white background + primary color accents)
+
+### Expected Output
+
+- Menu list screen working with mock data
+
+---
+
+## Day 6 — Menu Detail & Option Selection
+
+### Goal
+
+Allow customers to configure menu items.
+
+### Tasks
+
+- Build menu detail screen
+- Display item info and image placeholder
+- Implement option selection UI:
+  - single select (radio)
+  - multiple select (checkbox)
+- Validate required options
+- Add quantity control
+- Calculate item subtotal
+
+### Expected Output
+
+- Customer can select options and configure items
+
+---
+
+## Day 7 — Cart, Checkout & Flow Review
+
+### Goal
+
+Complete ordering flow and prepare for backend integration.
+
+### Tasks
+
+- Implement cart state management
+- Add/remove/update items
+- Display order summary
+- Calculate total price
+- Build mock checkout flow
+- Display order confirmation
+- Review full flow
+- Define backend API requirements:
+  - menu retrieval
+  - order creation
+  - option handling
+  - table context
+
+### Expected Output
+
+- Full mock ordering flow completed
+- Backend API requirements clearly defined
+
+---
+
+## Week 3 — Definition of Done
+
+- Admin menu management prototype completed
+- Category, menu, and option system working with mock data
+- Customer QR ordering flow implemented
+- Option selection logic validated
+- Cart and checkout flow completed
+- UI structure and theme established
+- Backend API requirements documented
