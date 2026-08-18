@@ -1,0 +1,93 @@
+// src/data/mockMenuData.ts
+
+import type { Category, MenuItem } from "@/types/menu.types";
+
+export const mockCategories: Category[] = [
+  {
+    id: "category-1",
+    name: "Main",
+    description: "Main dishes",
+    sortOrder: 1,
+    isVisible: true,
+    restaurantId: "restaurant-1",
+  },
+  {
+    id: "category-2",
+    name: "Drinks",
+    description: "Cold and hot drinks",
+    sortOrder: 2,
+    isVisible: true,
+    restaurantId: "restaurant-1",
+  },
+  {
+    id: "category-3",
+    name: "Desserts",
+    description: "Dessert menu",
+    sortOrder: 3,
+    isVisible: true,
+    restaurantId: "restaurant-1",
+  },
+];
+
+export const mockMenuItems: MenuItem[] = [
+  {
+    id: "menu-1",
+    name: "Cheeseburger",
+    description: "Beef patty with cheese",
+    price: 1590,
+    imageUrl: undefined,
+    sortOrder: 1,
+    isVisible: true,
+    isSoldOut: false,
+    restaurantId: "restaurant-1",
+    categoryId: "category-1",
+  },
+  {
+    id: "menu-2",
+    name: "Chicken Burger",
+    description: "Grilled chicken burger",
+    price: 1490,
+    imageUrl: undefined,
+    sortOrder: 2,
+    isVisible: true,
+    isSoldOut: false,
+    restaurantId: "restaurant-1",
+    categoryId: "category-1",
+  },
+  {
+    id: "menu-3",
+    name: "Coke",
+    description: "Coca-Cola",
+    price: 450,
+    imageUrl: undefined,
+    sortOrder: 1,
+    isVisible: true,
+    isSoldOut: false,
+    restaurantId: "restaurant-1",
+    categoryId: "category-2",
+  },
+  {
+    id: "menu-4",
+    name: "Coffee",
+    description: "Freshly brewed coffee",
+    price: 500,
+    imageUrl: undefined,
+    sortOrder: 2,
+    isVisible: true,
+    isSoldOut: false,
+    restaurantId: "restaurant-1",
+    categoryId: "category-2",
+  },
+  {
+    id: "menu-5",
+    name: "Cheesecake",
+    description: "Classic cheesecake",
+    price: 750,
+    imageUrl: undefined,
+    sortOrder: 1,
+    isVisible: true,
+    isSoldOut: false,
+    restaurantId: "restaurant-1",
+    categoryId: "category-3",
+  },
+];
