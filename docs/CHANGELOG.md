@@ -142,3 +142,12 @@ Status: Completed
 - Added admin navigation links and verified routing.
 - Defined Category and MenuItem client types based on Prisma schema.
 - Added mock category and menu data for upcoming UI development.
+
+## [2026-08-17] - Week3 Day 2
+
+### Category and Menu management
+
+- Added mock category list UI.
+- Added category create, edit, and delete functionality.
+- Added category visibility toggle.
+- Implemented category management using client-side mock state.
