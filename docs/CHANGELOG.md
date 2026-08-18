@@ -151,3 +151,10 @@ Status: Completed
 - Added category create, edit, and delete functionality.
 - Added category visibility toggle.
 - Implemented category management using client-side mock state.
+
+### Category & Menu Management
+
+- Added category and menu CRUD using mock data.
+- Added category selection, visibility, and sold-out controls.
+- Added menu image placeholder.
+- Verified admin management flow.
