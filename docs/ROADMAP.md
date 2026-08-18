@@ -265,7 +265,7 @@ The goal is to validate real product behavior before implementing backend APIs.
 
 ---
 
-## Day 1 — Admin Structure & Navigation Setup(Complted-2026-08-17)
+## Day 1 — Admin Structure & Navigation Setup(Completed-2026-08-17)
 
 ### Goal
 
@@ -288,7 +288,7 @@ Set up the admin-side structure for menu management.
 
 ---
 
-## Day 2 — Category & Menu Management(2026-08-18)
+## Day 2 — Category & Menu Management(Completed 2026-08-18)
 
 ### Goal
 
