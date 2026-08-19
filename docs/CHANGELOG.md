@@ -163,7 +163,8 @@ Status: Completed
 
 ### Menu Options System
 
-- Added OptionGroup and OptionItem types.
-- Added mock option data.
-- Implemented option group and item list rendering.
-- Verified option group and item relationships.
+- Added OptionGroup and OptionItem types and mock data.
+- Implemented option group and option item CRUD.
+- Added single/multiple and min/max selection settings.
+- Added additional price handling for option items.
+- Implemented menu item and option group assignment.

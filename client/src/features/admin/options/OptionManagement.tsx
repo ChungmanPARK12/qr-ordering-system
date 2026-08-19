@@ -1,36 +1,86 @@
 "use client";
 
 import { useState } from "react";
-import { mockOptionGroups, mockOptionItems } from "@/data/mockMenuData";
-import type { OptionGroup, OptionSelectionType } from "@/types/menu.types";
+import {
+  mockMenuItems,
+  mockOptionGroups,
+  mockOptionItems,
+} from "@/data/mockMenuData";
+
+import type {
+  OptionGroup,
+  OptionItem,
+  OptionSelectionType,
+} from "@/types/menu.types";
 
 const OptionManagement = () => {
+  // -----------------------------
+  // Option Group list state
+  // -----------------------------
   const [optionGroups, setOptionGroups] =
     useState<OptionGroup[]>(mockOptionGroups);
 
+  // -----------------------------
+  // Option Item list state
+  // -----------------------------
+  const [optionItems, setOptionItems] = useState<OptionItem[]>(mockOptionItems);
+
+  // -----------------------------
   // Add Option Group state
+  // -----------------------------
   const [name, setName] = useState("");
+
   const [selectionType, setSelectionType] =
     useState<OptionSelectionType>("single");
+
   const [isRequired, setIsRequired] = useState(false);
+
   const [minSelection, setMinSelection] = useState(0);
+
   const [maxSelection, setMaxSelection] = useState(1);
 
+  // -----------------------------
   // Edit Option Group state
+  // -----------------------------
   const [editingId, setEditingId] = useState<string | null>(null);
+
   const [editName, setEditName] = useState("");
+
   const [editSelectionType, setEditSelectionType] =
     useState<OptionSelectionType>("single");
+
   const [editIsRequired, setEditIsRequired] = useState(false);
+
   const [editMinSelection, setEditMinSelection] = useState(0);
+
   const [editMaxSelection, setEditMaxSelection] = useState(1);
 
+  // -----------------------------
+  // Add Option Item state
+  // -----------------------------
+  const [newItemName, setNewItemName] = useState("");
+
+  const [newItemPrice, setNewItemPrice] = useState("");
+
+  // -----------------------------
+  // Edit Option Item state
+  // -----------------------------
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+
+  const [editItemName, setEditItemName] = useState("");
+
+  const [editItemPrice, setEditItemPrice] = useState("");
+
+  // -----------------------------
+  // Add Option Group
+  // -----------------------------
   const handleAddOptionGroup = () => {
     if (!name.trim()) return;
     if (minSelection < 0) return;
     if (maxSelection < 1) return;
     if (minSelection > maxSelection) return;
 
+    // Single selection group can only allow one selection
     if (selectionType === "single" && maxSelection !== 1) {
       return;
     }
@@ -44,11 +94,14 @@ const OptionManagement = () => {
       maxSelection,
       sortOrder: optionGroups.length + 1,
       restaurantId: "restaurant-1",
+
+      // No menu is assigned when the group is first created
       menuItemIds: [],
     };
 
     setOptionGroups((prev) => [...prev, newOptionGroup]);
 
+    // Reset form
     setName("");
     setSelectionType("single");
     setIsRequired(false);
@@ -56,6 +109,9 @@ const OptionManagement = () => {
     setMaxSelection(1);
   };
 
+  // -----------------------------
+  // Start Option Group edit
+  // -----------------------------
   const handleStartEdit = (group: OptionGroup) => {
     setEditingId(group.id);
     setEditName(group.name);
@@ -65,6 +121,9 @@ const OptionManagement = () => {
     setEditMaxSelection(group.maxSelection);
   };
 
+  // -----------------------------
+  // Save Option Group edit
+  // -----------------------------
   const handleSaveEdit = (id: string) => {
     if (!editName.trim()) return;
     if (editMinSelection < 0) return;
@@ -90,6 +149,7 @@ const OptionManagement = () => {
       ),
     );
 
+    // Reset edit state
     setEditingId(null);
     setEditName("");
     setEditSelectionType("single");
@@ -98,6 +158,9 @@ const OptionManagement = () => {
     setEditMaxSelection(1);
   };
 
+  // -----------------------------
+  // Cancel Option Group edit
+  // -----------------------------
   const handleCancelEdit = () => {
     setEditingId(null);
     setEditName("");
@@ -107,14 +170,142 @@ const OptionManagement = () => {
     setEditMaxSelection(1);
   };
 
+  // -----------------------------
+  // Delete Option Group
+  // -----------------------------
   const handleDeleteOptionGroup = (id: string) => {
+    // Remove Option Group
     setOptionGroups((prev) => prev.filter((group) => group.id !== id));
+
+    // Remove all Option Items belonging to the group
+    setOptionItems((prev) => prev.filter((item) => item.optionGroupId !== id));
+  };
+
+  // -----------------------------
+  // Add Option Item
+  // -----------------------------
+  const handleAddOptionItem = (optionGroupId: string) => {
+    if (!newItemName.trim()) return;
+
+    // Convert displayed dollar amount to cents
+    const additionalPriceInCents = Math.round(Number(newItemPrice) * 100);
+
+    if (Number.isNaN(additionalPriceInCents) || additionalPriceInCents < 0) {
+      return;
+    }
+
+    // Count existing items in the selected group
+    const groupItemCount = optionItems.filter(
+      (item) => item.optionGroupId === optionGroupId,
+    ).length;
+
+    const newOptionItem: OptionItem = {
+      id: `option-item-${Date.now()}`,
+      name: newItemName.trim(),
+      additionalPrice: additionalPriceInCents,
+      sortOrder: groupItemCount + 1,
+      optionGroupId,
+    };
+
+    setOptionItems((prev) => [...prev, newOptionItem]);
+
+    // Reset Option Item form
+    setNewItemName("");
+    setNewItemPrice("");
+  };
+
+  // -----------------------------
+  // Start Option Item edit
+  // -----------------------------
+  const handleStartItemEdit = (item: OptionItem) => {
+    setEditingItemId(item.id);
+    setEditItemName(item.name);
+
+    // Convert cents back to dollar display value
+    setEditItemPrice((item.additionalPrice / 100).toFixed(2));
+  };
+
+  // -----------------------------
+  // Save Option Item edit
+  // -----------------------------
+  const handleSaveItemEdit = (id: string) => {
+    if (!editItemName.trim()) return;
+
+    const additionalPriceInCents = Math.round(Number(editItemPrice) * 100);
+
+    if (Number.isNaN(additionalPriceInCents) || additionalPriceInCents < 0) {
+      return;
+    }
+
+    setOptionItems((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              name: editItemName.trim(),
+              additionalPrice: additionalPriceInCents,
+            }
+          : item,
+      ),
+    );
+
+    // Reset Option Item edit state
+    setEditingItemId(null);
+    setEditItemName("");
+    setEditItemPrice("");
+  };
+
+  // -----------------------------
+  // Cancel Option Item edit
+  // -----------------------------
+  const handleCancelItemEdit = () => {
+    setEditingItemId(null);
+    setEditItemName("");
+    setEditItemPrice("");
+  };
+
+  // -----------------------------
+  // Delete Option Item
+  // -----------------------------
+  const handleDeleteOptionItem = (id: string) => {
+    setOptionItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  // -----------------------------
+  // Attach / Detach Menu Item
+  // -----------------------------
+  const handleToggleMenuAssignment = (
+    optionGroupId: string,
+    menuItemId: string,
+  ) => {
+    setOptionGroups((prev) =>
+      prev.map((group) => {
+        if (group.id !== optionGroupId) {
+          return group;
+        }
+
+        const isAssigned = group.menuItemIds.includes(menuItemId);
+
+        return {
+          ...group,
+
+          // Remove the menu if already assigned,
+          // otherwise add it to the group.
+          menuItemIds: isAssigned
+            ? group.menuItemIds.filter((id) => id !== menuItemId)
+            : [...group.menuItemIds, menuItemId],
+        };
+      }),
+    );
   };
 
   return (
     <div>
       <h1>Option Management</h1>
 
+      {/* -----------------------------
+          Add Option Group
+      ------------------------------ */}
       <div>
         <h2>Add Option Group</h2>
 
@@ -132,6 +323,7 @@ const OptionManagement = () => {
 
             setSelectionType(type);
 
+            // Single selection always has maxSelection = 1
             if (type === "single") {
               setMaxSelection(1);
 
@@ -142,6 +334,7 @@ const OptionManagement = () => {
           }}
         >
           <option value="single">Single</option>
+
           <option value="multiple">Multiple</option>
         </select>
 
@@ -154,10 +347,12 @@ const OptionManagement = () => {
 
               setIsRequired(required);
 
+              // Required group must have at least one selection
               if (required && minSelection === 0) {
                 setMinSelection(1);
               }
 
+              // Optional group allows zero selection
               if (!required) {
                 setMinSelection(0);
               }
@@ -190,8 +385,12 @@ const OptionManagement = () => {
 
       <hr />
 
+      {/* -----------------------------
+          Option Group list
+      ------------------------------ */}
       {optionGroups.map((group) => {
-        const groupItems = mockOptionItems.filter(
+        // Find Option Items belonging to this group
+        const groupItems = optionItems.filter(
           (item) => item.optionGroupId === group.id,
         );
 
@@ -199,6 +398,10 @@ const OptionManagement = () => {
           <div key={group.id}>
             {editingId === group.id ? (
               <>
+                {/* -----------------------------
+                    Edit Option Group
+                ------------------------------ */}
+
                 <input
                   type="text"
                   value={editName}
@@ -222,6 +425,7 @@ const OptionManagement = () => {
                   }}
                 >
                   <option value="single">Single</option>
+
                   <option value="multiple">Multiple</option>
                 </select>
 
@@ -273,6 +477,10 @@ const OptionManagement = () => {
               </>
             ) : (
               <>
+                {/* -----------------------------
+                    Option Group information
+                ------------------------------ */}
+
                 <h2>{group.name}</h2>
 
                 <p>Selection Type: {group.selectionType}</p>
@@ -280,19 +488,121 @@ const OptionManagement = () => {
                 <p>Required: {group.isRequired ? "Yes" : "No"}</p>
 
                 <p>Min Selection: {group.minSelection}</p>
+
                 <p>Max Selection: {group.maxSelection}</p>
 
                 <button onClick={() => handleStartEdit(group)}>Edit</button>
+
                 <button onClick={() => handleDeleteOptionGroup(group.id)}>
                   Delete
                 </button>
 
+                {/* -----------------------------
+                    Assigned Menu Items
+                ------------------------------ */}
+
+                <h3>Assigned Menus</h3>
+
+                {mockMenuItems.map((menuItem) => (
+                  <label
+                    key={menuItem.id}
+                    style={{
+                      display: "block",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={group.menuItemIds.includes(menuItem.id)}
+                      onChange={() =>
+                        handleToggleMenuAssignment(group.id, menuItem.id)
+                      }
+                    />
+
+                    {menuItem.name}
+                  </label>
+                ))}
+
                 <h3>Options</h3>
+
+                {/* -----------------------------
+                    Add Option Item
+                ------------------------------ */}
+
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Option name"
+                    value={newItemName}
+                    onChange={(event) => setNewItemName(event.target.value)}
+                  />
+
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="Additional price"
+                    value={newItemPrice}
+                    onChange={(event) => setNewItemPrice(event.target.value)}
+                  />
+
+                  <button onClick={() => handleAddOptionItem(group.id)}>
+                    Add Option
+                  </button>
+                </div>
+
+                {/* -----------------------------
+                    Option Item list
+                ------------------------------ */}
 
                 {groupItems.length > 0 ? (
                   groupItems.map((item) => (
                     <div key={item.id}>
-                      {item.name} — ${(item.additionalPrice / 100).toFixed(2)}
+                      {editingItemId === item.id ? (
+                        <>
+                          {/* Edit Option Item */}
+
+                          <input
+                            type="text"
+                            value={editItemName}
+                            onChange={(event) =>
+                              setEditItemName(event.target.value)
+                            }
+                          />
+
+                          <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            value={editItemPrice}
+                            onChange={(event) =>
+                              setEditItemPrice(event.target.value)
+                            }
+                          />
+
+                          <button onClick={() => handleSaveItemEdit(item.id)}>
+                            Save
+                          </button>
+
+                          <button onClick={handleCancelItemEdit}>Cancel</button>
+                        </>
+                      ) : (
+                        <>
+                          <span>
+                            {item.name} — ${" "}
+                            {(item.additionalPrice / 100).toFixed(2)}
+                          </span>
+
+                          <button onClick={() => handleStartItemEdit(item)}>
+                            Edit
+                          </button>
+
+                          <button
+                            onClick={() => handleDeleteOptionItem(item.id)}
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
                     </div>
                   ))
                 ) : (
