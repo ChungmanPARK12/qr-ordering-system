@@ -1,6 +1,11 @@
 // src/data/mockMenuData.ts
 
-import type { Category, MenuItem } from "@/types/menu.types";
+import type {
+  Category,
+  MenuItem,
+  OptionGroup,
+  OptionItem,
+} from "@/types/menu.types";
 
 export const mockCategories: Category[] = [
   {
@@ -89,5 +94,102 @@ export const mockMenuItems: MenuItem[] = [
     isSoldOut: false,
     restaurantId: "restaurant-1",
     categoryId: "category-3",
+  },
+];
+
+export const mockOptionGroups: OptionGroup[] = [
+  {
+    id: "option-group-1",
+    name: "Size",
+    selectionType: "single",
+    isRequired: true,
+    minSelection: 1,
+    maxSelection: 1,
+    sortOrder: 1,
+    restaurantId: "restaurant-1",
+    menuItemIds: ["menu-1", "menu-2", "menu-4"],
+  },
+  {
+    id: "option-group-2",
+    name: "Extras",
+    selectionType: "multiple",
+    isRequired: false,
+    minSelection: 0,
+    maxSelection: 3,
+    sortOrder: 2,
+    restaurantId: "restaurant-1",
+    menuItemIds: ["menu-1", "menu-2"],
+  },
+  {
+    id: "option-group-3",
+    name: "Milk",
+    selectionType: "single",
+    isRequired: false,
+    minSelection: 0,
+    maxSelection: 1,
+    sortOrder: 2,
+    restaurantId: "restaurant-1",
+    menuItemIds: ["menu-4"],
+  },
+];
+
+export const mockOptionItems: OptionItem[] = [
+  {
+    id: "option-item-1",
+    name: "Regular",
+    additionalPrice: 0,
+    sortOrder: 1,
+    optionGroupId: "option-group-1",
+  },
+  {
+    id: "option-item-2",
+    name: "Large",
+    additionalPrice: 300,
+    sortOrder: 2,
+    optionGroupId: "option-group-1",
+  },
+
+  {
+    id: "option-item-3",
+    name: "Extra Cheese",
+    additionalPrice: 100,
+    sortOrder: 1,
+    optionGroupId: "option-group-2",
+  },
+  {
+    id: "option-item-4",
+    name: "Bacon",
+    additionalPrice: 200,
+    sortOrder: 2,
+    optionGroupId: "option-group-2",
+  },
+  {
+    id: "option-item-5",
+    name: "Extra Patty",
+    additionalPrice: 400,
+    sortOrder: 3,
+    optionGroupId: "option-group-2",
+  },
+
+  {
+    id: "option-item-6",
+    name: "Full Cream",
+    additionalPrice: 0,
+    sortOrder: 1,
+    optionGroupId: "option-group-3",
+  },
+  {
+    id: "option-item-7",
+    name: "Soy",
+    additionalPrice: 100,
+    sortOrder: 2,
+    optionGroupId: "option-group-3",
+  },
+  {
+    id: "option-item-8",
+    name: "Oat",
+    additionalPrice: 100,
+    sortOrder: 3,
+    optionGroupId: "option-group-3",
   },
 ];
