@@ -143,7 +143,7 @@ Status: Completed
 - Defined Category and MenuItem client types based on Prisma schema.
 - Added mock category and menu data for upcoming UI development.
 
-## [2026-08-17] - Week3 Day 2
+## [2026-08-18] - Week3 Day 2
 
 ### Category and Menu management
 
@@ -158,3 +158,12 @@ Status: Completed
 - Added category selection, visibility, and sold-out controls.
 - Added menu image placeholder.
 - Verified admin management flow.
+
+## [2026-08-19] — Week 3 Day 3
+
+### Menu Options System
+
+- Added OptionGroup and OptionItem types.
+- Added mock option data.
+- Implemented option group and item list rendering.
+- Verified option group and item relationships.
