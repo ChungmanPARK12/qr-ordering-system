@@ -313,7 +313,7 @@ Allow admin to create and manage categories and menu items.
 
 ---
 
-## Day 3 — Menu Options System
+## Day 3 — Menu Options System(Completed)
 
 ### Goal
 
