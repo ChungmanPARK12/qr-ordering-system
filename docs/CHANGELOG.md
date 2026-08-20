@@ -168,3 +168,13 @@ Status: Completed
 - Added single/multiple and min/max selection settings.
 - Added additional price handling for option items.
 - Implemented menu item and option group assignment.
+
+## [2026-08-20] — Week 3 Day 4
+
+### QR Entry & Table Context
+
+- Added customer QR entry flow with restaurant and table parameters.
+- Added restaurant and table validation.
+- Implemented OrderSessionContext for table session state.
+- Added Start Order flow and session-based menu access.
+- Added invalid and missing session handling.

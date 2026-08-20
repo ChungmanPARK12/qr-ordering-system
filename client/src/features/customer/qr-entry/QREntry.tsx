@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import {
   mockRestaurants,
@@ -11,6 +11,7 @@ import {
 import { useOrderSession } from "@/features/customer/context/OrderSessionContext";
 
 const QREntry = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   const { session, setSession } = useOrderSession();
@@ -19,10 +20,14 @@ const QREntry = () => {
 
   const tableId = searchParams.get("tableId");
 
+  // -----------------------------
   // Find restaurant from mock data
+  // -----------------------------
   const restaurant = mockRestaurants.find((item) => item.id === restaurantId);
 
+  // -----------------------------
   // Find table from mock data
+  // -----------------------------
   const table = mockRestaurantTables.find((item) => item.id === tableId);
 
   // -----------------------------
@@ -125,6 +130,9 @@ const QREntry = () => {
     );
   }
 
+  // -----------------------------
+  // Valid QR entry
+  // -----------------------------
   return (
     <div>
       <h1>{restaurant.name}</h1>
@@ -139,7 +147,7 @@ const QREntry = () => {
 
       <p>QR entry validated successfully.</p>
 
-      {/* Temporary check for Day 4 */}
+      {/* Temporary Day 4 session check */}
       {session && (
         <div>
           <h3>Order Session</h3>
@@ -149,6 +157,8 @@ const QREntry = () => {
           <p>Table: {session.table.name}</p>
         </div>
       )}
+
+      <button onClick={() => router.push("/order/menu")}>Start Order</button>
     </div>
   );
 };

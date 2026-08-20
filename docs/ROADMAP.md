@@ -340,7 +340,7 @@ Support flexible menu options for each item.
 
 ---
 
-## Day 4 — QR Entry & Table Context
+## Day 4 — QR Entry & Table Context(Completed)
 
 ### Goal
 

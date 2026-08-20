@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+  type ReactNode,
+} from "react";
 
 import type { Restaurant, RestaurantTable } from "@/types/restaurant.types";
 
@@ -28,13 +34,15 @@ export const OrderSessionProvider = ({
 }: OrderSessionProviderProps) => {
   const [session, setSessionState] = useState<OrderSession | null>(null);
 
-  const setSession = (newSession: OrderSession) => {
+  // Keep function reference stable between renders
+  const setSession = useCallback((newSession: OrderSession) => {
     setSessionState(newSession);
-  };
+  }, []);
 
-  const clearSession = () => {
+  // Keep function reference stable between renders
+  const clearSession = useCallback(() => {
     setSessionState(null);
-  };
+  }, []);
 
   return (
     <OrderSessionContext.Provider
