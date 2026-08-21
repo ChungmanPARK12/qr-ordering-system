@@ -178,3 +178,13 @@ Status: Completed
 - Implemented OrderSessionContext for table session state.
 - Added Start Order flow and session-based menu access.
 - Added invalid and missing session handling.
+
+## [2026-08-21] — Week 3 Day 5
+
+### Menu List Screen
+
+- Added customer menu list screen.
+- Added category and menu visibility filtering.
+- Added category and menu sorting.
+- Added sold-out state handling.
+- Added basic responsive menu card UI.
