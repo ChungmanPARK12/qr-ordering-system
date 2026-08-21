@@ -55,7 +55,10 @@ export const mockMenuItems: MenuItem[] = [
     imageUrl: undefined,
     sortOrder: 2,
     isVisible: true,
-    isSoldOut: false,
+
+    // Temporary test
+    isSoldOut: true,
+
     restaurantId: "restaurant-1",
     categoryId: "category-1",
   },

@@ -360,7 +360,7 @@ Create customer entry flow via QR scan.
 
 ---
 
-## Day 5 — Menu List Screen
+## Day 5 — Menu List Screen(Completed)
 
 ### Goal
 
