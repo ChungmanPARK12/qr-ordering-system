@@ -380,7 +380,7 @@ Display categories and menu items to customers.
 
 ---
 
-## Day 6 — Menu Detail & Option Selection
+## Day 6 — Menu Detail & Option Selection(Completed)
 
 ### Goal
 

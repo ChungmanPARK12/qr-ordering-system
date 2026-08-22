@@ -188,3 +188,14 @@ Status: Completed
 - Added category and menu sorting.
 - Added sold-out state handling.
 - Added basic responsive menu card UI.
+
+## [2026-08-22] — Week 3 Day 6
+
+### Menu Detail & Option Selection
+
+- Added dynamic menu detail screen.
+- Added single and multiple option selection.
+- Added required option validation.
+- Added quantity controls.
+- Added option-based subtotal calculation.
+- Added sold-out item access handling.

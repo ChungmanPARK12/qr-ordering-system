@@ -1,11 +1,15 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { mockCategories, mockMenuItems } from "@/data/mockMenuData";
 import { useOrderSession } from "@/features/customer/context/OrderSessionContext";
 
 import styles from "./MenuList.module.css";
 
 const MenuList = () => {
+  const router = useRouter();
+
   const { session } = useOrderSession();
 
   // Prevent direct access without QR session.
@@ -28,6 +32,7 @@ const MenuList = () => {
 
   return (
     <main className={styles.page}>
+      {/* Restaurant / table information */}
       <header className={styles.header}>
         <h1 className={styles.restaurantName}>{session.restaurant.name}</h1>
 
@@ -36,6 +41,7 @@ const MenuList = () => {
 
       <h2 className={styles.menuTitle}>Menu</h2>
 
+      {/* Category list */}
       {visibleCategories.map((category) => {
         // Find visible menu items belonging to the current category.
         const categoryMenuItems = mockMenuItems
@@ -65,7 +71,17 @@ const MenuList = () => {
                     className={`${styles.menuCard} ${
                       menuItem.isSoldOut ? styles.soldOut : ""
                     }`}
+                    onClick={() => {
+                      // Sold-out menu items cannot open the detail screen.
+                      if (menuItem.isSoldOut) {
+                        return;
+                      }
+
+                      // Navigate to the dynamic menu detail route.
+                      router.push(`/order/menu/${menuItem.id}`);
+                    }}
                   >
+                    {/* Menu image / placeholder */}
                     <div className={styles.imagePlaceholder}>
                       {menuItem.imageUrl ? (
                         <img
@@ -78,6 +94,7 @@ const MenuList = () => {
                       )}
                     </div>
 
+                    {/* Menu information */}
                     <div className={styles.menuInfo}>
                       <h3 className={styles.menuName}>{menuItem.name}</h3>
 
