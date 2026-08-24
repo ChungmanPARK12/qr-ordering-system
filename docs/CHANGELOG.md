@@ -199,3 +199,14 @@ Status: Completed
 - Added quantity controls.
 - Added option-based subtotal calculation.
 - Added sold-out item access handling.
+
+## [2026-08-24] — Week 3 Day 7
+
+### Cart, Checkout & Flow Review
+
+- Added cart state management and item controls.
+- Added cart total and order summary.
+- Implemented mock checkout and order confirmation.
+- Verified full customer ordering flow.
+- Documented backend API requirements.
+- Completed the plan for Week3

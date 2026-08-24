@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import {
   mockMenuItems,
@@ -9,13 +10,19 @@ import {
 } from "@/data/mockMenuData";
 
 import { useOrderSession } from "@/features/customer/context/OrderSessionContext";
+import { useCart } from "@/features/customer/context/CartContext";
+
+import type { CartOptionItem } from "@/types/cart.types";
 
 type MenuDetailProps = {
   menuItemId: string;
 };
 
 const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
+  const router = useRouter();
+
   const { session } = useOrderSession();
+  const { addItem } = useCart();
 
   // -----------------------------
   // Selected Option state
@@ -209,9 +216,56 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
 
   // -----------------------------
   // Calculate item subtotal
-  // (menu price + options) × quantity
   // -----------------------------
   const itemSubtotal = (menuItem.price + optionsTotal) * quantity;
+
+  // -----------------------------
+  // Add configured Menu Item to Cart
+  // -----------------------------
+  const handleAddToCart = () => {
+    const isValid = validateOptions();
+
+    if (!isValid) {
+      return;
+    }
+
+    const cartOptions: CartOptionItem[] = [];
+
+    assignedOptionGroups.forEach((group) => {
+      const selectedIds = selectedOptions[group.id] ?? [];
+
+      selectedIds.forEach((optionItemId) => {
+        const optionItem = mockOptionItems.find(
+          (item) => item.id === optionItemId,
+        );
+
+        if (!optionItem) {
+          return;
+        }
+
+        cartOptions.push({
+          optionGroupId: group.id,
+          optionGroupName: group.name,
+
+          optionItemId: optionItem.id,
+
+          optionItemName: optionItem.name,
+
+          additionalPrice: optionItem.additionalPrice,
+        });
+      });
+    });
+
+    addItem({
+      menuItemId: menuItem.id,
+      menuItemName: menuItem.name,
+      basePrice: menuItem.price,
+      selectedOptions: cartOptions,
+      quantity,
+    });
+
+    router.push("/order/cart");
+  };
 
   return (
     <main>
@@ -341,7 +395,6 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
                   <p>No options available.</p>
                 )}
 
-                {/* Validation error */}
                 {validationErrors[group.id] && (
                   <p>{validationErrors[group.id]}</p>
                 )}
@@ -384,18 +437,10 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
       </section>
 
       {/* -----------------------------
-          Temporary validation button
+          Add to Cart
       ------------------------------ */}
-      <button
-        onClick={() => {
-          const isValid = validateOptions();
-
-          if (isValid) {
-            console.log("Option validation passed");
-          }
-        }}
-      >
-        Validate Options
+      <button onClick={handleAddToCart}>
+        Add to Cart — ${(itemSubtotal / 100).toFixed(2)}
       </button>
     </main>
   );
