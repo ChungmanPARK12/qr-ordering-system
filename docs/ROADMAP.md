@@ -1,442 +1,337 @@
-# QR Restaurant Ordering System — Roadmap
-
-## Week 1 — Foundation & Environment Setup
+## Week 4 — UI Polish & Responsive Customer Experience
 
 ### Objective
 
-Establish a stable development environment and project structure that allows immediate feature development.
+Polish the existing QR ordering prototype into a clean and consistent service-like interface before backend integration.
 
-#### 1. Project Initialization(Finished)
+The goal is to keep the existing ordering logic unchanged while improving visual consistency, usability, responsive behavior, and overall product quality.
 
-- Created root project structure:
-  - client/
-  - server/
-  - docs/
-- Initialized Next.js app (client)
-- Initialized Node.js + Express backend (server)
+Main focus:
 
----
-
-#### 2. Frontend Setup (Next.js)(Finished)
-
-- Next.js (App Router + TypeScript) initialized
-- Tailwind CSS configured
-- Project runs successfully
+- Customer ordering flow
+- Shared visual styles
+- Mobile-friendly layouts
+- Clear interaction states
+- Consistent admin/customer UI structure
 
 ---
 
-#### 3. Backend Setup (Express + TypeScript)(Finished)
-
-- Express server initialized
-- Middleware configured:
-  - cors
-  - helmet
-  - morgan
-- Basic `/health` endpoint implemented
-- Server successfully running on port 4000
-
----
-
-#### 4. TypeScript Configuration(Finished)
-
-- Resolved module system conflicts
-- Configured:
-  - module: Node16
-  - moduleResolution: node16
-- Fixed compilation errors
-
----
-
-#### 5. Prisma Initialization(Finished)
-
-- Prisma installed and initialized
-- `schema.prisma` created
-- `.env` configured with DATABASE_URL
-
----
-
-#### 6. PostgreSQL Connection
-
-- PostgreSQL database created:
-  - qr_order_system
-- Prisma successfully connected to database
-- Verified connection using `prisma db pull`
-
----
-
-### Key Decisions (Locked)
-
-- QR code includes table identification
-- Real-time admin dashboard required (WebSocket)
-- Print flow: Admin-triggered → device output
-- Database must support future analytics:
-  - daily revenue
-  - monthly revenue
-  - menu-level statistics
-- Order snapshot data must be stored
-
----
-
-### Current Status
-
-- Backend: Running
-- Frontend: Running
-- Database: Connected
-- Schema: Not yet implemented
-
----
-
-## Week 2 — Database Design & Core Models
-
-### Objective
-
-Design a scalable and extensible database structure supporting QR ordering, admin operations, printing workflow, and future analytics.
-
----
-
-## Day 1 — Schema Strategy & Entity Mapping(Comleted)
+## Day 1 — Design System & Shared UI Foundation
 
 ### Goal
 
-Define the full database structure conceptually before implementation.
+Define the basic visual rules that will be reused across the ordering system.
 
 ### Tasks
 
-- Identify core entities
-- Define responsibility of each entity
-- Draft relationships between entities
-- Define order snapshot strategy
-- Consider future analytics requirements
-
-### Expected Output
-
-- Entity map
-- Relationship draft
-- Design notes
-
----
-
-## Day 2 — Core Store Models(Completed)
-
-### Goal
-
-Implement base entities for restaurant and admin structure.
-
-### Tasks
-
-- Define `Restaurant`
-- Define `AdminUser`
-- Define `RestaurantTable`
-- Establish relations between entities
-- Define base fields and constraints
-
-### Expected Output
-
-- Prisma schema (Part 1)
-- Core relations validated
-
----
-
-## Day 3 — Menu Models(Completed)
-
-### Goal
-
-Design menu-related structure.
-
-### Tasks
-
-- Define `Category`
-- Define `MenuItem`
-- Add menu metadata (price, description, image)
-- Define ordering and visibility fields
-- Link menu to restaurant and category
-
-### Expected Output
-
-- Prisma schema (Part 2)
-- Menu structure finalized
-
----
-
-## Day 4 — Order Models(Completed)
-
-### Goal
-
-Design order processing structure.
-
-### Tasks
-
-- Define `CustomerOrder`
-- Define `CustomerOrderItem`
-- Add order status fields
-- Add payment status fields
-- Add print status fields
-- Implement snapshot fields (menu name, price)
-- Define total calculation structure
-
-### Expected Output
-
-- Prisma schema (Part 3)
-- Order flow-ready structure
-
----
-
-## Day 5 — Print Model & Audit Fields(Completed)
-
-### Goal
-
-Support printing workflow and tracking.
-
-### Tasks
-
-- Define `PrintJob`
-- Add print status tracking
-- Add retry and failure handling fields
-- Define relation with orders and admin actions
-- Standardize audit fields (`createdAt`, `updatedAt`)
-
-### Expected Output
-
-- Prisma schema (Part 4)
-- Print-ready data structure
-
----
-
-## Day 6 — Migration & Database Reflection(Completed)
-
-### Goal
-
-Apply schema to actual database.
-
-### Tasks
-
-- Validate Prisma schema
-- Run initial migration
-- Verify tables in database
-- Verify using Prisma Studio
-
-### Expected Output
-
-- Initial migration completed
-- Physical database tables created
-
----
-
-## Day 7 — Seed Data Setup
-
-### Goal
-
-Prepare initial dataset for development and testing.
-
-### Tasks
-
-- Define seed strategy
-- Create sample restaurant
-- Create sample admin user
-- Create sample tables
-- Create sample categories and menu items
-- Execute seed script
-
-### Expected Output
-
-- Testable dataset available
-- Ready for feature development
-
----
-
-## Week 2 — Definition of Done
-
-- Prisma schema fully implemented
-- Core models created
-- Migration successfully applied
-- Database verified via Prisma Studio
-- Seed data inserted
-- System ready for feature development
-
----
-
-## Week 3 — Client & Admin Menu Prototype
-
-### Objective
-
-Build both admin-side menu management and customer-side QR ordering flow using mock data.
-
-The goal is to validate real product behavior before implementing backend APIs.
-
----
-
-## Day 1 — Admin Structure & Navigation Setup(Completed-2026-08-17)
-
-### Goal
-
-Set up the admin-side structure for menu management.
-
-### Tasks
-
-- Define admin screen structure
-- Set up navigation for admin flow
-- Create placeholder screens:
-  - Category management
-  - Menu management
-  - Option management
-- Prepare mock data structure for menu system
-
-### Expected Output
-
-- Admin navigation structure ready
-- Placeholder screens created
-
----
-
-## Day 2 — Category & Menu Management(Completed 2026-08-18)
-
-### Goal
-
-Allow admin to create and manage categories and menu items.
-
-### Tasks
-
-- Create category list UI
-- Add category creation/edit/delete
-- Create menu item list UI
-- Add menu item creation/edit/delete
-- Add fields:
-  - name
-  - description
+- Define primary UI colors:
+  - primary accent
+  - background
+  - text
+  - muted text
+  - border
+  - disabled / sold-out state
+
+- Define common layout rules:
+  - page width
+  - mobile padding
+  - max-width
+  - section spacing
+  - card spacing
+
+- Define typography hierarchy:
+  - page title
+  - section title
+  - menu title
+  - body text
   - price
-  - image placeholder
-  - visibility / sold-out status
+  - helper text
+
+- Define common UI patterns:
+  - primary button
+  - secondary button
+  - destructive button
+  - cards
+  - input fields
+  - radio / checkbox controls
+  - quantity controls
+
+- Review `globals.css`
+- Decide which styles should be:
+  - global
+  - CSS Module
+  - shared component styles
 
 ### Expected Output
 
-- Admin can manage categories and menu items using mock data
+- Base visual theme established
+- Shared spacing and typography rules defined
+- Common button/card/input styles ready for reuse
 
 ---
 
-## Day 3 — Menu Options System(Completed)
+## Day 2 — QR Entry Screen Polish
 
 ### Goal
 
-Support flexible menu options for each item.
+Turn the QR entry page into a clean customer landing screen.
 
 ### Tasks
 
-- Design option data structure:
-  - OptionGroup
-  - OptionItem
-- Implement option group UI:
-  - group name
-  - required / optional
-  - selection type (single / multiple)
-  - min/max selection
-- Implement option item UI:
-  - name
-  - additional price
-- Attach option groups to menu items
+- Polish `/order` QR entry screen
+- Display restaurant branding area
+- Improve restaurant information layout
+- Improve table information display
+- Add clear Start Order button
+- Improve validation/error screens:
+  - Invalid QR
+  - Restaurant not found
+  - Table not found
+  - Table unavailable
+  - Restaurant unavailable
+
+- Create consistent success/error page layout
+- Add mobile-friendly spacing and sizing
 
 ### Expected Output
 
-- Admin can define flexible options for each menu item
+- QR entry screen looks like a real customer-facing service
+- Invalid QR states are visually clear
+- Start Order action is prominent
 
 ---
 
-## Day 4 — QR Entry & Table Context(Completed)
+## Day 3 — Menu List Screen Polish
 
 ### Goal
 
-Create customer entry flow via QR scan.
+Create a clean and easy-to-browse restaurant menu experience.
 
 ### Tasks
 
-- Build QR entry screen
-- Handle restaurant and table parameters
-- Store table context in client state
-- Display basic restaurant info
-- Handle invalid table cases
+- Refine restaurant/table header
+- Improve category section layout
+- Improve category typography
+- Refine menu item cards
+- Improve image placeholder
+- Improve menu name / description / price layout
+- Add hover / active states where appropriate
+- Improve sold-out presentation
+- Add clear visual separation between categories
+- Keep responsive card width
+- Add reasonable desktop max-width
+- Review empty category state
 
 ### Expected Output
 
-- Customer can enter ordering flow with table context
+- Menu list looks like a production-style restaurant ordering screen
+- Categories and menu items are easy to scan
+- Sold-out items are immediately recognizable
 
 ---
 
-## Day 5 — Menu List Screen(Completed)
+## Day 4 — Menu Detail & Option Selection Polish
 
 ### Goal
 
-Display categories and menu items to customers.
+Improve usability of menu configuration and option selection.
 
 ### Tasks
 
-- Render category sections
-- Display menu items with mock data
-- Handle visibility and sold-out state
-- Apply sorting logic
-- Design clean list UI (white background + primary color accents)
+- Polish menu detail layout
+- Improve menu image / placeholder section
+- Improve item name, description, and base price hierarchy
+
+- Style OptionGroup sections:
+  - required indicator
+  - optional indicator
+  - min/max selection hints
+
+- Improve radio controls
+- Improve checkbox controls
+- Improve selected states
+- Improve validation error messages
+
+- Style quantity controls:
+  - minus button
+  - quantity value
+  - plus button
+
+- Make subtotal visually prominent
+- Style Add to Cart button
+- Add spacing between option groups
 
 ### Expected Output
 
-- Menu list screen working with mock data
+- Customers can configure menu items clearly
+- Required options and validation states are easy to understand
+- Quantity and subtotal controls look service-ready
 
 ---
 
-## Day 6 — Menu Detail & Option Selection(Completed)
+## Day 5 — Cart Screen Polish
 
 ### Goal
 
-Allow customers to configure menu items.
+Create a clear and usable shopping cart experience.
 
 ### Tasks
 
-- Build menu detail screen
-- Display item info and image placeholder
-- Implement option selection UI:
-  - single select (radio)
-  - multiple select (checkbox)
-- Validate required options
-- Add quantity control
-- Calculate item subtotal
+- Improve cart page header
+- Display restaurant/table context cleanly
+- Create Cart Item card layout
+- Group selected options visually
+- Improve quantity controls
+- Style Remove action
+- Improve unit price / subtotal display
+- Make total price prominent
+- Style Proceed to Checkout button
+- Improve empty cart state
+- Add Continue Ordering navigation if useful
 
 ### Expected Output
 
-- Customer can select options and configure items
+- Cart items are easy to review and modify
+- Different option configurations are visually distinguishable
+- Total and checkout action are clear
 
 ---
 
-## Day 7 — Cart, Checkout & Flow Review(Completed)
+## Day 6 — Checkout & Order Confirmation Polish
 
 ### Goal
 
-Complete ordering flow and prepare for backend integration.
+Finish the visual customer ordering journey.
 
 ### Tasks
 
-- Implement cart state management
-- Add/remove/update items
-- Display order summary
-- Calculate total price
-- Build mock checkout flow
-- Display order confirmation
-- Review full flow
-- Define backend API requirements:
-  - menu retrieval
-  - order creation
-  - option handling
-  - table context
+#### Checkout
+
+- Improve order information section
+- Improve order summary cards
+- Display options and quantities clearly
+- Emphasize final total
+- Style Place Order button
+- Improve empty checkout state
+
+#### Confirmation
+
+- Create clear order success state
+- Display confirmation icon / visual area
+- Highlight order number
+- Display:
+  - restaurant
+  - table
+  - total amount
+
+- Improve confirmation message
+- Add clear final action if needed:
+  - Return to Menu
+  - Start New Order
 
 ### Expected Output
 
-- Full mock ordering flow completed
-- Backend API requirements clearly defined
+- Checkout feels like a final review screen
+- Order confirmation clearly communicates successful ordering
+- Full customer flow has consistent styling
 
 ---
 
-## Week 3 — Definition of Done
+## Day 7 — Responsive Review, Admin Cleanup & Full UI Audit
 
-- Admin menu management prototype completed
-- Category, menu, and option system working with mock data
-- Customer QR ordering flow implemented
-- Option selection logic validated
-- Cart and checkout flow completed
-- UI structure and theme established
-- Backend API requirements documented
+### Goal
+
+Review the complete interface and prepare the frontend for backend integration.
+
+### Tasks
+
+#### Responsive Testing
+
+- Test customer flow at:
+  - desktop width
+  - tablet width
+  - mobile width
+
+- Review:
+  - card width
+  - text wrapping
+  - image sizes
+  - button sizes
+  - page padding
+  - option controls
+  - cart layout
+
+- Fix obvious responsive issues
+
+#### Admin UI Cleanup
+
+- Apply basic consistent styles to:
+  - Admin Home
+  - Category Management
+  - Menu Management
+  - Option Management
+
+- Keep admin UI practical rather than heavily designed
+- Reuse shared colors / buttons / spacing where possible
+
+#### Full Flow Review
+
+Test:
+
+QR Entry
+→ Menu List
+→ Menu Detail
+→ Option Selection
+→ Add to Cart
+→ Cart
+→ Checkout
+→ Order Confirmation
+
+Review:
+
+- visual consistency
+- interaction states
+- empty states
+- validation states
+- sold-out state
+- responsive layout
+
+### Expected Output
+
+- Customer ordering flow visually polished
+- Basic admin UI visually consistent
+- Responsive layout verified
+- Frontend ready for backend integration
+
+---
+
+## Week 4 — Definition of Done
+
+- Shared design system established
+- Customer QR entry screen polished
+- Menu list visually production-ready
+- Menu detail and option selection polished
+- Cart screen polished
+- Checkout and confirmation screens polished
+- Error and empty states styled consistently
+- Responsive behavior reviewed
+- Basic admin UI cleanup completed
+- Existing ordering functionality remains intact
+- Frontend ready for backend API integration
+
+---
+
+## Week 4 — Development Rule
+
+UI changes should not modify the existing ordering logic unless a usability issue requires it.
+
+Existing functionality to preserve:
+
+- QR/table validation
+- OrderSessionContext
+- Menu visibility and sorting
+- Option validation
+- Quantity and subtotal calculations
+- Cart merge/separate logic
+- Checkout flow
+- Order confirmation flow
