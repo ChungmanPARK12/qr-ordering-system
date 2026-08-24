@@ -403,7 +403,7 @@ Allow customers to configure menu items.
 
 ---
 
-## Day 7 — Cart, Checkout & Flow Review
+## Day 7 — Cart, Checkout & Flow Review(Completed)
 
 ### Goal
 
