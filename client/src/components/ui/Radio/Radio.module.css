@@ -1,0 +1,39 @@
+.option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+
+  color: var(--color-text);
+  font-size: var(--font-size-body);
+
+  cursor: pointer;
+}
+
+.input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+
+  accent-color: var(--color-primary);
+
+  cursor: pointer;
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.option:has(.input:disabled) {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.label {
+  line-height: 1.4;
+}

@@ -210,3 +210,11 @@ Status: Completed
 - Verified full customer ordering flow.
 - Documented backend API requirements.
 - Completed the plan for Week3
+
+### Week 4 — Day 1: Design System & Shared UI Foundation
+
+- Added global design tokens for colors, spacing, typography, and layout
+- Created reusable `Button`, `Card`, `Input`, `Radio`, `Checkbox`, and `QuantityControl` components
+- Applied shared UI components to Admin and Customer screens
+- Added responsive layout and common component states
+- Verified existing flows remain functional

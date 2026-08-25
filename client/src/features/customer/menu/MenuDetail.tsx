@@ -3,6 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import Button from "@/components/ui/Button/Button";
+import Checkbox from "@/components/ui/Checkbox/Checkbox";
+import QuantityControl from "@/components/ui/QuantityControl/QuantityControl";
+import Radio from "@/components/ui/Radio/Radio";
+
 import {
   mockMenuItems,
   mockOptionGroups,
@@ -101,17 +106,6 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
 
       return nextErrors;
     });
-  };
-
-  // -----------------------------
-  // Quantity controls
-  // -----------------------------
-  const handleDecreaseQuantity = () => {
-    setQuantity((prev) => Math.max(1, prev - 1));
-  };
-
-  const handleIncreaseQuantity = () => {
-    setQuantity((prev) => prev + 1);
   };
 
   // -----------------------------
@@ -246,11 +240,8 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
         cartOptions.push({
           optionGroupId: group.id,
           optionGroupName: group.name,
-
           optionItemId: optionItem.id,
-
           optionItemName: optionItem.name,
-
           additionalPrice: optionItem.additionalPrice,
         });
       });
@@ -334,30 +325,32 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
                     const isSelected =
                       selectedOptions[group.id]?.includes(item.id) ?? false;
 
+                    const optionLabel = (
+                      <>
+                        <span>{item.name}</span>
+
+                        {item.additionalPrice > 0 && (
+                          <span>
+                            {" "}
+                            +${(item.additionalPrice / 100).toFixed(2)}
+                          </span>
+                        )}
+                      </>
+                    );
+
                     // Single selection
                     if (group.selectionType === "single") {
                       return (
                         <div key={item.id}>
-                          <label>
-                            <input
-                              type="radio"
-                              name={group.id}
-                              checked={isSelected}
-                              onChange={() =>
-                                handleSingleSelect(group.id, item.id)
-                              }
-                            />
-
-                            <span>{item.name}</span>
-
-                            {item.additionalPrice > 0 && (
-                              <span>
-                                {" "}
-                                +$
-                                {(item.additionalPrice / 100).toFixed(2)}
-                              </span>
-                            )}
-                          </label>
+                          <Radio
+                            id={`radio-${group.id}-${item.id}`}
+                            name={group.id}
+                            checked={isSelected}
+                            onChange={() =>
+                              handleSingleSelect(group.id, item.id)
+                            }
+                            label={optionLabel}
+                          />
                         </div>
                       );
                     }
@@ -365,29 +358,18 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
                     // Multiple selection
                     return (
                       <div key={item.id}>
-                        <label>
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={() =>
-                              handleMultipleSelect(
-                                group.id,
-                                item.id,
-                                group.maxSelection,
-                              )
-                            }
-                          />
-
-                          <span>{item.name}</span>
-
-                          {item.additionalPrice > 0 && (
-                            <span>
-                              {" "}
-                              +$
-                              {(item.additionalPrice / 100).toFixed(2)}
-                            </span>
-                          )}
-                        </label>
+                        <Checkbox
+                          id={`checkbox-${group.id}-${item.id}`}
+                          checked={isSelected}
+                          onChange={() =>
+                            handleMultipleSelect(
+                              group.id,
+                              item.id,
+                              group.maxSelection,
+                            )
+                          }
+                          label={optionLabel}
+                        />
                       </div>
                     );
                   })
@@ -414,17 +396,12 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
       <section>
         <h2>Quantity</h2>
 
-        <button onClick={handleDecreaseQuantity}>-</button>
-
-        <span
-          style={{
-            margin: "0 12px",
-          }}
-        >
-          {quantity}
-        </span>
-
-        <button onClick={handleIncreaseQuantity}>+</button>
+        <QuantityControl
+          value={quantity}
+          min={1}
+          max={99}
+          onChange={setQuantity}
+        />
       </section>
 
       <hr />
@@ -439,9 +416,9 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
       {/* -----------------------------
           Add to Cart
       ------------------------------ */}
-      <button onClick={handleAddToCart}>
+      <Button onClick={handleAddToCart}>
         Add to Cart — ${(itemSubtotal / 100).toFixed(2)}
-      </button>
+      </Button>
     </main>
   );
 };
