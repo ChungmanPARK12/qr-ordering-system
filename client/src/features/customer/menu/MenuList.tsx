@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
+import Card from "@/components/ui/Card/Card";
 import { mockCategories, mockMenuItems } from "@/data/mockMenuData";
 import { useOrderSession } from "@/features/customer/context/OrderSessionContext";
 
@@ -66,7 +67,7 @@ const MenuList = () => {
             {categoryMenuItems.length > 0 ? (
               <div className={styles.menuList}>
                 {categoryMenuItems.map((menuItem) => (
-                  <div
+                  <Card
                     key={menuItem.id}
                     className={`${styles.menuCard} ${
                       menuItem.isSoldOut ? styles.soldOut : ""
@@ -112,7 +113,7 @@ const MenuList = () => {
                         <span className={styles.soldOutLabel}>Sold Out</span>
                       )}
                     </div>
-                  </div>
+                  </Card>
                 ))}
               </div>
             ) : (

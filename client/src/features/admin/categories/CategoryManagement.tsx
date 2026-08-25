@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+
+import Button from "@/components/ui/Button/Button";
+import Input from "@/components/ui/Input/Input";
 import { mockCategories } from "@/data/mockMenuData";
 import type { Category } from "@/types/menu.types";
 
@@ -85,21 +88,25 @@ const CategoryManagement = () => {
       <div>
         <h2>Add Category</h2>
 
-        <input
+        <Input
+          id="category-name"
+          label="Category name"
           type="text"
-          placeholder="Category name"
+          placeholder="Enter category name"
           value={name}
           onChange={(event) => setName(event.target.value)}
         />
 
-        <input
+        <Input
+          id="category-description"
+          label="Description"
           type="text"
-          placeholder="Description"
+          placeholder="Enter description"
           value={description}
           onChange={(event) => setDescription(event.target.value)}
         />
 
-        <button onClick={handleAddCategory}>Add Category</button>
+        <Button onClick={handleAddCategory}>Add Category</Button>
       </div>
 
       <hr />
@@ -108,21 +115,27 @@ const CategoryManagement = () => {
         <div key={category.id}>
           {editingId === category.id ? (
             <>
-              <input
+              <Input
+                id={`edit-category-name-${category.id}`}
+                label="Category name"
                 type="text"
                 value={editName}
                 onChange={(event) => setEditName(event.target.value)}
               />
 
-              <input
+              <Input
+                id={`edit-category-description-${category.id}`}
+                label="Description"
                 type="text"
                 value={editDescription}
                 onChange={(event) => setEditDescription(event.target.value)}
               />
 
-              <button onClick={() => handleSaveEdit(category.id)}>Save</button>
+              <Button onClick={() => handleSaveEdit(category.id)}>Save</Button>
 
-              <button onClick={handleCancelEdit}>Cancel</button>
+              <Button variant="secondary" onClick={handleCancelEdit}>
+                Cancel
+              </Button>
             </>
           ) : (
             <>
@@ -131,13 +144,26 @@ const CategoryManagement = () => {
               <p>Sort Order: {category.sortOrder}</p>
               <p>Visible: {category.isVisible ? "Yes" : "No"}</p>
 
-              <button onClick={() => handleStartEdit(category)}>Edit</button>
-              <button onClick={() => handleDeleteCategory(category.id)}>
+              <Button
+                variant="secondary"
+                onClick={() => handleStartEdit(category)}
+              >
+                Edit
+              </Button>
+
+              <Button
+                variant="destructive"
+                onClick={() => handleDeleteCategory(category.id)}
+              >
                 Delete
-              </button>
-              <button onClick={() => handleToggleVisibility(category.id)}>
+              </Button>
+
+              <Button
+                variant="secondary"
+                onClick={() => handleToggleVisibility(category.id)}
+              >
                 {category.isVisible ? "Hide" : "Show"}
-              </button>
+              </Button>
             </>
           )}
         </div>

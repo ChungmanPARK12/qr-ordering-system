@@ -16,7 +16,7 @@ Main focus:
 
 ---
 
-## Day 1 — Design System & Shared UI Foundation
+## Day 1 — Design System & Shared UI Foundation(Completed)
 
 ### Goal
 

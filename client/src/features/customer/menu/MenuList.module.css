@@ -1,62 +1,62 @@
 .page {
   min-height: 100vh;
-  background: #ffffff;
-  padding: 20px;
-  color: #222222;
+  background: var(--color-background);
+  padding: var(--page-padding-mobile);
+  color: var(--color-text);
 }
 
 .header {
-  margin-bottom: 28px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #eeeeee;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .restaurantName {
   margin: 0;
-  font-size: 28px;
-  font-weight: 700;
+  font-size: var(--font-size-page-title);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
 }
 
 .tableName {
-  margin-top: 6px;
-  color: #666666;
-  font-size: 14px;
+  margin-top: var(--space-xs);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
 }
 
 .menuTitle {
-  margin: 0 0 24px;
-  font-size: 24px;
+  margin: 0 0 var(--space-lg);
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
 }
 
 .categorySection {
-  margin-bottom: 36px;
+  margin-bottom: var(--space-xl);
 }
 
 .categoryTitle {
   margin: 0;
-  font-size: 22px;
-  font-weight: 700;
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
 }
 
 .categoryDescription {
-  margin: 6px 0 18px;
-  color: #777777;
-  font-size: 14px;
+  margin: var(--space-xs) 0 var(--space-md);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
 }
 
 .menuList {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-md);
 }
 
 .menuCard {
   display: flex;
-  gap: 16px;
-  padding: 14px;
-  border: 1px solid #eeeeee;
-  border-radius: 12px;
-  background: #ffffff;
+  gap: var(--space-md);
 }
 
 .soldOut {
@@ -67,15 +67,13 @@
   width: 110px;
   height: 90px;
   flex-shrink: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  border-radius: 8px;
-  background: #f3f3f3;
-  color: #888888;
-  font-size: 13px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-helper);
   overflow: hidden;
 }
 
@@ -90,34 +88,46 @@
 }
 
 .menuName {
-  margin: 0 0 6px;
-  font-size: 17px;
-  font-weight: 600;
+  margin: 0 0 var(--space-xs);
+  font-size: var(--font-size-menu-title);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
 }
 
 .menuDescription {
-  margin: 0 0 10px;
-  color: #666666;
-  font-size: 14px;
+  margin: 0 0 var(--space-sm);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
   line-height: 1.4;
 }
 
 .price {
   margin: 0;
-  font-weight: 700;
+  font-size: var(--font-size-menu-title);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
 }
 
 .soldOutLabel {
   display: inline-block;
-  margin-top: 8px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: #eeeeee;
-  font-size: 12px;
-  font-weight: 600;
+  margin-top: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  background: var(--color-disabled);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-helper);
+  font-weight: var(--font-weight-semibold);
 }
 
 .emptyMessage {
-  color: #888888;
-  font-size: 14px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
+}
+
+@media (min-width: 768px) {
+  .page {
+    max-width: var(--page-max-width);
+    margin: 0 auto;
+    padding: var(--page-padding-desktop);
+  }
 }
