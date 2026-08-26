@@ -3,6 +3,9 @@
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
+import Button from "@/components/ui/Button/Button";
+import Card from "@/components/ui/Card/Card";
+
 import {
   mockRestaurants,
   mockRestaurantTables,
@@ -10,14 +13,15 @@ import {
 
 import { useOrderSession } from "@/features/customer/context/OrderSessionContext";
 
+import styles from "./QREntry.module.css";
+
 const QREntry = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const { session, setSession } = useOrderSession();
+  const { setSession } = useOrderSession();
 
   const restaurantId = searchParams.get("restaurantId");
-
   const tableId = searchParams.get("tableId");
 
   // -----------------------------
@@ -53,15 +57,33 @@ const QREntry = () => {
   }, [restaurant, table, setSession]);
 
   // -----------------------------
+  // Shared status / error layout
+  // -----------------------------
+  const renderStatusPage = (title: string, message: string) => {
+    return (
+      <main className={styles.statusPage}>
+        <Card className={styles.statusCard}>
+          <div className={styles.statusIcon}>!</div>
+
+          <h1 className={styles.statusTitle}>{title}</h1>
+
+          <p className={styles.statusMessage}>{message}</p>
+
+          <p className={styles.statusHelper}>
+            Please check the QR code or ask a staff member for assistance.
+          </p>
+        </Card>
+      </main>
+    );
+  };
+
+  // -----------------------------
   // Missing query parameters
   // -----------------------------
   if (!restaurantId || !tableId) {
-    return (
-      <div>
-        <h1>Invalid QR Code</h1>
-
-        <p>Restaurant or table information is missing.</p>
-      </div>
+    return renderStatusPage(
+      "Invalid QR Code",
+      "Restaurant or table information is missing.",
     );
   }
 
@@ -69,12 +91,9 @@ const QREntry = () => {
   // Restaurant does not exist
   // -----------------------------
   if (!restaurant) {
-    return (
-      <div>
-        <h1>Restaurant Not Found</h1>
-
-        <p>This restaurant is not available.</p>
-      </div>
+    return renderStatusPage(
+      "Restaurant Not Found",
+      "This restaurant could not be found.",
     );
   }
 
@@ -82,12 +101,9 @@ const QREntry = () => {
   // Table does not exist
   // -----------------------------
   if (!table) {
-    return (
-      <div>
-        <h1>Table Not Found</h1>
-
-        <p>This table does not exist.</p>
-      </div>
+    return renderStatusPage(
+      "Table Not Found",
+      "This table could not be found.",
     );
   }
 
@@ -95,12 +111,9 @@ const QREntry = () => {
   // Table belongs to another restaurant
   // -----------------------------
   if (table.restaurantId !== restaurant.id) {
-    return (
-      <div>
-        <h1>Invalid Table</h1>
-
-        <p>This table does not belong to this restaurant.</p>
-      </div>
+    return renderStatusPage(
+      "Invalid Table",
+      "This table does not belong to this restaurant.",
     );
   }
 
@@ -108,12 +121,9 @@ const QREntry = () => {
   // Restaurant inactive
   // -----------------------------
   if (!restaurant.isActive) {
-    return (
-      <div>
-        <h1>Restaurant Unavailable</h1>
-
-        <p>This restaurant is currently unavailable.</p>
-      </div>
+    return renderStatusPage(
+      "Restaurant Unavailable",
+      "This restaurant is currently unavailable for ordering.",
     );
   }
 
@@ -121,12 +131,9 @@ const QREntry = () => {
   // Table inactive
   // -----------------------------
   if (!table.isActive || table.status === "INACTIVE") {
-    return (
-      <div>
-        <h1>Table Unavailable</h1>
-
-        <p>This table is currently unavailable.</p>
-      </div>
+    return renderStatusPage(
+      "Table Unavailable",
+      "This table is currently unavailable for ordering.",
     );
   }
 
@@ -134,32 +141,70 @@ const QREntry = () => {
   // Valid QR entry
   // -----------------------------
   return (
-    <div>
-      <h1>{restaurant.name}</h1>
+    <main className={styles.page}>
+      <div className={styles.container}>
+        {/* -----------------------------
+            Restaurant branding
+        ------------------------------ */}
+        <section className={styles.branding}>
+          <div className={styles.logoPlaceholder}>
+            {restaurant.name.charAt(0).toUpperCase()}
+          </div>
 
-      <p>{restaurant.description}</p>
+          <h1 className={styles.restaurantName}>{restaurant.name}</h1>
 
-      <h2>{table.name}</h2>
+          {restaurant.description && (
+            <p className={styles.description}>{restaurant.description}</p>
+          )}
+        </section>
 
-      <p>Table Number: {table.tableNumber}</p>
+        {/* -----------------------------
+            Order entry
+        ------------------------------ */}
+        <Card className={styles.entryCard}>
+          <div>
+            <h2 className={styles.welcomeTitle}>Welcome</h2>
 
-      {table.capacity && <p>Capacity: {table.capacity}</p>}
+            <p className={styles.helperText}>
+              Confirm your table information before starting your order.
+            </p>
+          </div>
 
-      <p>QR entry validated successfully.</p>
+          {/* -----------------------------
+              Table information
+          ------------------------------ */}
+          <div className={styles.tableSection}>
+            <p className={styles.tableLabel}>YOUR TABLE</p>
 
-      {/* Temporary Day 4 session check */}
-      {session && (
-        <div>
-          <h3>Order Session</h3>
+            <h3 className={styles.tableName}>{table.name}</h3>
 
-          <p>Restaurant: {session.restaurant.name}</p>
+            <div className={styles.tableDetails}>
+              <p className={styles.tableMeta}>
+                Table Number: {table.tableNumber}
+              </p>
 
-          <p>Table: {session.table.name}</p>
-        </div>
-      )}
+              {table.capacity && (
+                <p className={styles.tableMeta}>Capacity: {table.capacity}</p>
+              )}
+            </div>
+          </div>
 
-      <button onClick={() => router.push("/order/menu")}>Start Order</button>
-    </div>
+          <p className={styles.confirmationText}>
+            You&apos;re ordering from this table.
+          </p>
+
+          {/* -----------------------------
+              Start order
+          ------------------------------ */}
+          <Button
+            className={styles.startButton}
+            onClick={() => router.push("/order/menu")}
+          >
+            Start Order
+          </Button>
+        </Card>
+      </div>
+    </main>
   );
 };
 

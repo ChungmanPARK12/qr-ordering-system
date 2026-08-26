@@ -1,0 +1,148 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+
+  background: var(--color-surface);
+  padding: var(--space-lg) var(--page-padding-mobile);
+}
+
+.container {
+  width: 100%;
+  max-width: 480px;
+}
+
+.branding {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.logoPlaceholder {
+  width: 64px;
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto var(--space-md);
+
+  border-radius: var(--radius-lg);
+  background: var(--color-primary);
+  color: #ffffff;
+
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-bold);
+}
+
+.restaurantName {
+  margin: 0;
+
+  color: var(--color-text);
+  font-size: var(--font-size-page-title);
+  font-weight: var(--font-weight-bold);
+}
+
+.description {
+  margin: var(--space-sm) 0 0;
+
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
+  line-height: 1.5;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.welcome {
+  margin: 0;
+
+  color: var(--color-text);
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-semibold);
+}
+
+.helperText {
+  margin: 0;
+
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
+  line-height: 1.5;
+}
+
+.tableSection {
+  padding: var(--space-md);
+
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.tableLabel {
+  margin: 0 0 var(--space-xs);
+
+  color: var(--color-text-muted);
+  font-size: var(--font-size-helper);
+  font-weight: var(--font-weight-semibold);
+}
+
+.tableName {
+  margin: 0;
+
+  color: var(--color-text);
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-bold);
+}
+
+.tableMeta {
+  margin: var(--space-xs) 0 0;
+
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
+}
+
+.startButton {
+  width: 100%;
+}
+
+.statusPage {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--color-surface);
+  padding: var(--space-lg) var(--page-padding-mobile);
+}
+
+.statusCard {
+  width: 100%;
+  max-width: 440px;
+
+  text-align: center;
+}
+
+.statusTitle {
+  margin: 0 0 var(--space-sm);
+
+  color: var(--color-text);
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-bold);
+}
+
+.statusMessage {
+  margin: 0;
+
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding: var(--space-2xl) var(--page-padding-desktop);
+  }
+}

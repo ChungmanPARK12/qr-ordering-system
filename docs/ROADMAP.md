@@ -70,7 +70,7 @@ Define the basic visual rules that will be reused across the ordering system.
 
 ---
 
-## Day 2 — QR Entry Screen Polish
+## Day 2 — QR Entry Screen Polish(Completed)
 
 ### Goal
 

@@ -218,3 +218,11 @@ Status: Completed
 - Applied shared UI components to Admin and Customer screens
 - Added responsive layout and common component states
 - Verified existing flows remain functional
+
+### Week 4 — Day 2: QR Entry Screen Polish
+
+- Polished customer QR entry screen with restaurant branding and table details
+- Added shared Card and Button styling
+- Added consistent QR validation and error-state layouts
+- Improved mobile-first spacing and customer entry flow
+- Verified QR validation and Start Order navigation
