@@ -101,7 +101,7 @@ Turn the QR entry page into a clean customer landing screen.
 
 ---
 
-## Day 3 — Menu List Screen Polish
+## Day 3 — Menu List Screen Polish(Completed)
 
 ### Goal
 

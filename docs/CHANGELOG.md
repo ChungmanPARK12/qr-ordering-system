@@ -226,3 +226,11 @@ Status: Completed
 - Added consistent QR validation and error-state layouts
 - Improved mobile-first spacing and customer entry flow
 - Verified QR validation and Start Order navigation
+
+### Week 4 — Day 3: Menu List Screen Polish
+
+- Polished menu cards, category layout, and responsive sizing
+- Added hover, active, and sold-out states
+- Improved menu image, pricing, and category separation
+- Added category and menu empty states
+- Verified menu visibility and navigation flows
