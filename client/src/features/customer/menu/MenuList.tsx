@@ -42,86 +42,93 @@ const MenuList = () => {
 
       <h2 className={styles.menuTitle}>Menu</h2>
 
-      {/* Category list */}
-      {visibleCategories.map((category) => {
-        // Find visible menu items belonging to the current category.
-        const categoryMenuItems = mockMenuItems
-          .filter(
-            (menuItem) =>
-              menuItem.restaurantId === session.restaurant.id &&
-              menuItem.categoryId === category.id &&
-              menuItem.isVisible,
-          )
-          .sort((a, b) => a.sortOrder - b.sortOrder);
+      {/* No visible categories */}
+      {visibleCategories.length === 0 ? (
+        <p className={styles.emptyMessage}>
+          No menu categories are currently available.
+        </p>
+      ) : (
+        /* Category list */
+        visibleCategories.map((category) => {
+          // Find visible menu items belonging to the current category.
+          const categoryMenuItems = mockMenuItems
+            .filter(
+              (menuItem) =>
+                menuItem.restaurantId === session.restaurant.id &&
+                menuItem.categoryId === category.id &&
+                menuItem.isVisible,
+            )
+            .sort((a, b) => a.sortOrder - b.sortOrder);
 
-        return (
-          <section key={category.id} className={styles.categorySection}>
-            <h2 className={styles.categoryTitle}>{category.name}</h2>
+          return (
+            <section key={category.id} className={styles.categorySection}>
+              <h2 className={styles.categoryTitle}>{category.name}</h2>
 
-            {category.description && (
-              <p className={styles.categoryDescription}>
-                {category.description}
-              </p>
-            )}
+              {category.description && (
+                <p className={styles.categoryDescription}>
+                  {category.description}
+                </p>
+              )}
 
-            {categoryMenuItems.length > 0 ? (
-              <div className={styles.menuList}>
-                {categoryMenuItems.map((menuItem) => (
-                  <Card
-                    key={menuItem.id}
-                    className={`${styles.menuCard} ${
-                      menuItem.isSoldOut ? styles.soldOut : ""
-                    }`}
-                    onClick={() => {
-                      // Sold-out menu items cannot open the detail screen.
-                      if (menuItem.isSoldOut) {
-                        return;
-                      }
+              {categoryMenuItems.length > 0 ? (
+                <div className={styles.menuList}>
+                  {categoryMenuItems.map((menuItem) => (
+                    <Card
+                      key={menuItem.id}
+                      className={`${styles.menuCard} ${
+                        menuItem.isSoldOut ? styles.soldOut : ""
+                      }`}
+                      onClick={() => {
+                        // Sold-out menu items cannot open the detail screen.
+                        if (menuItem.isSoldOut) {
+                          return;
+                        }
 
-                      // Navigate to the dynamic menu detail route.
-                      router.push(`/order/menu/${menuItem.id}`);
-                    }}
-                  >
-                    {/* Menu image / placeholder */}
-                    <div className={styles.imagePlaceholder}>
-                      {menuItem.imageUrl ? (
-                        <img
-                          src={menuItem.imageUrl}
-                          alt={menuItem.name}
-                          className={styles.menuImage}
-                        />
-                      ) : (
-                        <span>No Image</span>
-                      )}
-                    </div>
+                        // Navigate to the dynamic menu detail route.
+                        router.push(`/order/menu/${menuItem.id}`);
+                      }}
+                    >
+                      {/* Menu image / placeholder */}
+                      <div className={styles.imagePlaceholder}>
+                        {menuItem.imageUrl ? (
+                          <img
+                            src={menuItem.imageUrl}
+                            alt={menuItem.name}
+                            className={styles.menuImage}
+                          />
+                        ) : (
+                          <span>No Image</span>
+                        )}
+                      </div>
 
-                    {/* Menu information */}
-                    <div className={styles.menuInfo}>
-                      <h3 className={styles.menuName}>{menuItem.name}</h3>
+                      {/* Menu information */}
+                      <div className={styles.menuInfo}>
+                        <h3 className={styles.menuName}>{menuItem.name}</h3>
 
-                      {menuItem.description && (
-                        <p className={styles.menuDescription}>
-                          {menuItem.description}
+                        {menuItem.description && (
+                          <p className={styles.menuDescription}>
+                            {menuItem.description}
+                          </p>
+                        )}
+
+                        <p className={styles.price}>
+                          ${(menuItem.price / 100).toFixed(2)}
                         </p>
-                      )}
 
-                      <p className={styles.price}>
-                        ${(menuItem.price / 100).toFixed(2)}
-                      </p>
-
-                      {menuItem.isSoldOut && (
-                        <span className={styles.soldOutLabel}>Sold Out</span>
-                      )}
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <p className={styles.emptyMessage}>No menu items available.</p>
-            )}
-          </section>
-        );
-      })}
+                        {menuItem.isSoldOut && (
+                          <span className={styles.soldOutLabel}>Sold Out</span>
+                        )}
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <p className={styles.emptyMessage}>No menu items available.</p>
+              )}
+            </section>
+          );
+        })
+      )}
     </main>
   );
 };
