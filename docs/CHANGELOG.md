@@ -234,3 +234,11 @@ Status: Completed
 - Improved menu image, pricing, and category separation
 - Added category and menu empty states
 - Verified menu visibility and navigation flows
+
+### Week 4 — Day 4: Menu Detail & Option Selection Polish
+
+- Polished menu detail and option group layouts
+- Added required/optional and selected option states
+- Improved validation, quantity, subtotal, and Add to Cart UI
+- Adjusted responsive spacing and menu image layout
+- Verified option selection and cart flow

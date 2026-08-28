@@ -130,7 +130,7 @@ Create a clean and easy-to-browse restaurant menu experience.
 
 ---
 
-## Day 4 — Menu Detail & Option Selection Polish
+## Day 4 — Menu Detail & Option Selection Polish(Completed)
 
 ### Goal
 
