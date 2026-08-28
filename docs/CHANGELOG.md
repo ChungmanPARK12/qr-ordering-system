@@ -242,3 +242,12 @@ Status: Completed
 - Improved validation, quantity, subtotal, and Add to Cart UI
 - Adjusted responsive spacing and menu image layout
 - Verified option selection and cart flow
+
+### Week 4 — Day 5: Cart Screen Polish
+
+- Polished cart layout and restaurant/table context
+- Added cart item cards with selected option details
+- Improved quantity, remove, subtotal, and total UI
+- Added checkout and continue ordering actions
+- Added empty cart state
+- Verified Cart → Checkout flow
