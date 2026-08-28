@@ -169,7 +169,7 @@ Improve usability of menu configuration and option selection.
 
 ---
 
-## Day 5 — Cart Screen Polish
+## Day 5 — Cart Screen Polish(Completed)
 
 ### Goal
 
@@ -197,7 +197,7 @@ Create a clear and usable shopping cart experience.
 
 ---
 
-## Day 6 — Checkout & Order Confirmation Polish
+## Day 6 — Checkout & Order Confirmation Polish(Completed)
 
 ### Goal
 

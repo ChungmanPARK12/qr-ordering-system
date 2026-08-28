@@ -251,3 +251,11 @@ Status: Completed
 - Added checkout and continue ordering actions
 - Added empty cart state
 - Verified Cart → Checkout flow
+
+### Week 4 — Day 6: Checkout & Order Confirmation Polish
+
+- Polished checkout and order summary UI
+- Added order information, total, and navigation actions
+- Added order confirmation screen with mock order number
+- Added empty checkout and duplicate-order protection
+- Verified Cart → Checkout → Confirmation flow
