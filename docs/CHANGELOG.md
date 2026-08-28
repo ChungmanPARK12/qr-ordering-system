@@ -234,3 +234,28 @@ Status: Completed
 - Improved menu image, pricing, and category separation
 - Added category and menu empty states
 - Verified menu visibility and navigation flows
+
+### Week 4 — Day 4: Menu Detail & Option Selection Polish
+
+- Polished menu detail and option group layouts
+- Added required/optional and selected option states
+- Improved validation, quantity, subtotal, and Add to Cart UI
+- Adjusted responsive spacing and menu image layout
+- Verified option selection and cart flow
+
+### Week 4 — Day 5: Cart Screen Polish
+
+- Polished cart layout and restaurant/table context
+- Added cart item cards with selected option details
+- Improved quantity, remove, subtotal, and total UI
+- Added checkout and continue ordering actions
+- Added empty cart state
+- Verified Cart → Checkout flow
+
+### Week 4 — Day 6: Checkout & Order Confirmation Polish
+
+- Polished checkout and order summary UI
+- Added order information, total, and navigation actions
+- Added order confirmation screen with mock order number
+- Added empty checkout and duplicate-order protection
+- Verified Cart → Checkout → Confirmation flow

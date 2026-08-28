@@ -1,0 +1,241 @@
+.page {
+  min-height: 100vh;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--page-padding-mobile);
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+.menuInfoSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.imageWrapper {
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.menuImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imagePlaceholder {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
+}
+
+.menuInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.menuName {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-page-title);
+  font-weight: var(--font-weight-bold);
+}
+
+.menuDescription {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
+  line-height: 1.5;
+}
+
+.basePrice {
+  margin: var(--space-xs) 0 0;
+  color: var(--color-text);
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-bold);
+}
+
+/* --------------------------------
+   Options
+-------------------------------- */
+
+.optionsSection {
+  padding: var(--space-lg) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sectionTitle {
+  margin: 0 0 var(--space-md);
+  color: var(--color-text);
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-semibold);
+}
+
+.optionGroupList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.optionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-background);
+}
+
+.optionGroupError {
+  border-color: var(--color-danger);
+}
+
+.optionGroupHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.optionGroupTitle {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-menu-title);
+  font-weight: var(--font-weight-semibold);
+}
+
+.optionHint {
+  margin: var(--space-xs) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-helper);
+}
+
+.requirementBadge {
+  flex-shrink: 0;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-helper);
+  font-weight: var(--font-weight-semibold);
+}
+
+.requiredBadge {
+  background: var(--color-primary);
+  color: white;
+}
+
+.optionalBadge {
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+}
+
+.optionList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.optionRow {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-background);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.optionRow:hover {
+  background: var(--color-surface);
+}
+
+.selectedOption {
+  border-color: var(--color-primary);
+  background: var(--color-surface);
+}
+
+.optionLabel {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.optionPrice {
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.validationError {
+  margin: 0;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  background: #fff1f1;
+  color: var(--color-danger);
+  font-size: var(--font-size-helper);
+  font-weight: var(--font-weight-semibold);
+}
+
+.emptyMessage {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
+}
+
+/* --------------------------------
+   Quantity
+-------------------------------- */
+
+.quantitySection {
+  padding: var(--space-lg) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* --------------------------------
+   Subtotal
+-------------------------------- */
+
+.subtotalSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  padding: var(--space-lg) 0 var(--space-md);
+}
+
+.subtotalLabel {
+  color: var(--color-text);
+  font-size: var(--font-size-menu-title);
+  font-weight: var(--font-weight-semibold);
+}
+
+.subtotalPrice {
+  color: var(--color-text);
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-bold);
+}
+
+/* --------------------------------
+   Add to Cart
+-------------------------------- */
+
+.addToCartButton {
+  width: 100%;
+  min-height: 48px;
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding: var(--page-padding-desktop);
+  }
+}

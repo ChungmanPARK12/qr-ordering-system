@@ -130,7 +130,7 @@ Create a clean and easy-to-browse restaurant menu experience.
 
 ---
 
-## Day 4 — Menu Detail & Option Selection Polish
+## Day 4 — Menu Detail & Option Selection Polish(Completed)
 
 ### Goal
 
@@ -169,7 +169,7 @@ Improve usability of menu configuration and option selection.
 
 ---
 
-## Day 5 — Cart Screen Polish
+## Day 5 — Cart Screen Polish(Completed)
 
 ### Goal
 
@@ -197,7 +197,7 @@ Create a clear and usable shopping cart experience.
 
 ---
 
-## Day 6 — Checkout & Order Confirmation Polish
+## Day 6 — Checkout & Order Confirmation Polish(Completed)
 
 ### Goal
 

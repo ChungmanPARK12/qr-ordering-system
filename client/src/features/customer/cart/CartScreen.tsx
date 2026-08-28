@@ -1,106 +1,182 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
+import Button from "@/components/ui/Button/Button";
+import Card from "@/components/ui/Card/Card";
+import QuantityControl from "@/components/ui/QuantityControl/QuantityControl";
+
 import { useCart } from "@/features/customer/context/CartContext";
 import { useOrderSession } from "@/features/customer/context/OrderSessionContext";
-import { useRouter } from "next/navigation";
+
+import styles from "./CartScreen.module.css";
 
 const CartScreen = () => {
   const router = useRouter();
+
   const { session } = useOrderSession();
 
   const { items, totalPrice, updateQuantity, removeItem } = useCart();
 
-  // Prevent direct access without QR session
+  // -----------------------------
+  // Prevent direct access
+  // without QR session
+  // -----------------------------
   if (!session) {
     return (
-      <div>
-        <h1>No Order Session</h1>
-        <p>Please scan the table QR code first.</p>
-      </div>
+      <main className={styles.statusPage}>
+        <Card className={styles.statusCard}>
+          <h1 className={styles.statusTitle}>No Order Session</h1>
+
+          <p className={styles.statusMessage}>
+            Please scan the table QR code first.
+          </p>
+        </Card>
+      </main>
     );
   }
 
   return (
-    <main>
-      <h1>Cart</h1>
+    <main className={styles.page}>
+      {/* -----------------------------
+          Header
+      ------------------------------ */}
+      <header className={styles.header}>
+        <h1 className={styles.pageTitle}>Your Cart</h1>
 
-      <p>Restaurant: {session.restaurant.name}</p>
+        <div className={styles.orderContext}>
+          <span>{session.restaurant.name}</span>
+          <span className={styles.contextDivider}>•</span>
+          <span>{session.table.name}</span>
+        </div>
+      </header>
 
-      <p>Table: {session.table.name}</p>
-
-      <hr />
-
+      {/* -----------------------------
+          Empty Cart
+      ------------------------------ */}
       {items.length === 0 ? (
-        <p>Your cart is empty.</p>
+        <Card className={styles.emptyCard}>
+          <div className={styles.emptyIcon}>🛒</div>
+
+          <h2 className={styles.emptyTitle}>Your cart is empty</h2>
+
+          <p className={styles.emptyMessage}>
+            Add some items from the menu to start your order.
+          </p>
+
+          <Button
+            className={styles.continueButton}
+            onClick={() => router.push("/order/menu")}
+          >
+            Continue Ordering
+          </Button>
+        </Card>
       ) : (
         <>
-          {items.map((item) => (
-            <section key={item.id}>
-              <h2>{item.menuItemName}</h2>
+          {/* -----------------------------
+              Cart Items
+          ------------------------------ */}
+          <section className={styles.cartList}>
+            {items.map((item) => (
+              <Card key={item.id} className={styles.cartItem}>
+                <div className={styles.itemHeader}>
+                  <div>
+                    <h2 className={styles.itemName}>{item.menuItemName}</h2>
 
-              {/* Selected Options */}
-              {item.selectedOptions.length > 0 && (
-                <div>
-                  <h3>Options</h3>
-
-                  {item.selectedOptions.map((option) => (
-                    <p key={`${option.optionGroupId}-${option.optionItemId}`}>
-                      {option.optionGroupName}: {option.optionItemName}
-                      {option.additionalPrice > 0 && (
-                        <>
-                          {" "}
-                          +$
-                          {(option.additionalPrice / 100).toFixed(2)}
-                        </>
-                      )}
+                    <p className={styles.unitPrice}>
+                      ${(item.unitPrice / 100).toFixed(2)} each
                     </p>
-                  ))}
+                  </div>
+
+                  <p className={styles.itemSubtotal}>
+                    ${(item.subtotal / 100).toFixed(2)}
+                  </p>
                 </div>
-              )}
 
-              {/* Quantity control */}
-              <div>
-                <button
-                  onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                  disabled={item.quantity <= 1}
-                >
-                  -
-                </button>
+                {/* -----------------------------
+                    Selected Options
+                ------------------------------ */}
+                {item.selectedOptions.length > 0 && (
+                  <div className={styles.optionsSection}>
+                    <p className={styles.optionsTitle}>Selected Options</p>
 
-                <span
-                  style={{
-                    margin: "0 12px",
-                  }}
-                >
-                  {item.quantity}
-                </span>
+                    <div className={styles.optionList}>
+                      {item.selectedOptions.map((option) => (
+                        <div
+                          key={`${option.optionGroupId}-${option.optionItemId}`}
+                          className={styles.optionRow}
+                        >
+                          <div className={styles.optionInfo}>
+                            <span className={styles.optionGroupName}>
+                              {option.optionGroupName}
+                            </span>
 
-                <button
-                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                >
-                  +
-                </button>
-              </div>
+                            <span className={styles.optionItemName}>
+                              {option.optionItemName}
+                            </span>
+                          </div>
 
-              <p>Unit Price: ${(item.unitPrice / 100).toFixed(2)}</p>
+                          {option.additionalPrice > 0 && (
+                            <span className={styles.optionPrice}>
+                              +$
+                              {(option.additionalPrice / 100).toFixed(2)}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-              <p>Subtotal: ${(item.subtotal / 100).toFixed(2)}</p>
+                {/* -----------------------------
+                    Actions
+                ------------------------------ */}
+                <div className={styles.itemActions}>
+                  <QuantityControl
+                    value={item.quantity}
+                    min={1}
+                    max={99}
+                    onChange={(value) => updateQuantity(item.id, value)}
+                  />
 
-              {/* Remove Cart Item */}
-              <button onClick={() => removeItem(item.id)}>Remove</button>
-
-              <hr />
-            </section>
-          ))}
-
-          {/* Cart Total */}
-          <section>
-            <h2>Total: ${(totalPrice / 100).toFixed(2)}</h2>
+                  <Button
+                    variant="destructive"
+                    onClick={() => removeItem(item.id)}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              </Card>
+            ))}
           </section>
 
-          <button onClick={() => router.push("/order/checkout")}>
-            Proceed to Checkout
-          </button>
+          {/* -----------------------------
+              Cart Summary
+          ------------------------------ */}
+          <section className={styles.summarySection}>
+            <div className={styles.totalRow}>
+              <span className={styles.totalLabel}>Total</span>
+
+              <span className={styles.totalPrice}>
+                ${(totalPrice / 100).toFixed(2)}
+              </span>
+            </div>
+
+            <Button
+              className={styles.checkoutButton}
+              onClick={() => router.push("/order/checkout")}
+            >
+              Proceed to Checkout
+            </Button>
+
+            <Button
+              variant="secondary"
+              className={styles.continueOrderingButton}
+              onClick={() => router.push("/order/menu")}
+            >
+              Continue Ordering
+            </Button>
+          </section>
         </>
       )}
     </main>
