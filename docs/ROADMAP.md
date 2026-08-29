@@ -237,7 +237,7 @@ Finish the visual customer ordering journey.
 
 ---
 
-## Day 7 — Responsive Review, Admin Cleanup & Full UI Audit
+## Day 7 — Responsive Review, Admin Cleanup & Full UI Audit(Completed)
 
 ### Goal
 
@@ -308,30 +308,25 @@ Review:
 ## Week 4 — Definition of Done
 
 - Shared design system established
-- Customer QR entry screen polished
-- Menu list visually production-ready
-- Menu detail and option selection polished
-- Cart screen polished
-- Checkout and confirmation screens polished
-- Error and empty states styled consistently
+- Customer ordering UI polished
+- Error and empty states styled
+- Full customer ordering flow reviewed
 - Responsive behavior reviewed
-- Basic admin UI cleanup completed
 - Existing ordering functionality remains intact
-- Frontend ready for backend API integration
+- Frontend ready for backend integration
+- Admin UI cleanup deferred until backend CRUD integration
 
 ---
 
 ## Week 4 — Development Rule
 
-UI changes should not modify the existing ordering logic unless a usability issue requires it.
+UI changes should not modify existing ordering logic unless required for usability.
 
-Existing functionality to preserve:
+Preserve:
 
 - QR/table validation
 - OrderSessionContext
-- Menu visibility and sorting
-- Option validation
-- Quantity and subtotal calculations
-- Cart merge/separate logic
-- Checkout flow
-- Order confirmation flow
+- Menu and option logic
+- Quantity and price calculations
+- Cart logic
+- Checkout and confirmation flow

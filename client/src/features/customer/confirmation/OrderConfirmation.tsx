@@ -7,7 +7,7 @@ import Card from "@/components/ui/Card/Card";
 
 import { useOrderSession } from "@/features/customer/context/OrderSessionContext";
 
-import styles from "./ OrderConfirmation.module.css";
+import styles from "./OrderConfirmation.module.css";
 
 const OrderConfirmation = () => {
   const router = useRouter();

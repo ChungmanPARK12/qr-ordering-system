@@ -11,11 +11,14 @@
   width: 100%;
   max-width: 520px;
   align-self: flex-start;
+
   display: flex;
   flex-direction: column;
   align-items: center;
+
   gap: var(--space-lg);
   padding: var(--space-xl);
+
   text-align: center;
 }
 
@@ -26,11 +29,14 @@
 .successIcon {
   width: 64px;
   height: 64px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   border-radius: 50%;
   background: var(--color-primary);
+
   color: white;
   font-size: 32px;
   font-weight: var(--font-weight-bold);
@@ -44,6 +50,7 @@
 
 .pageTitle {
   margin: 0;
+
   color: var(--color-text);
   font-size: var(--font-size-page-title);
   font-weight: var(--font-weight-bold);
@@ -51,6 +58,7 @@
 
 .confirmationMessage {
   margin: 0;
+
   color: var(--color-text-muted);
   font-size: var(--font-size-body);
   line-height: 1.5;
@@ -62,23 +70,31 @@
 
 .orderNumberSection {
   width: 100%;
+
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
-  padding: var(--space-md);
+  gap: var(--space-sm);
+
+  padding: var(--space-lg);
+
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: var(--color-surface);
+
+  background: var(--color-background);
 }
 
 .orderNumberLabel {
   color: var(--color-text-muted);
   font-size: var(--font-size-helper);
+  font-weight: var(--font-weight-semibold);
 }
 
 .orderNumber {
   color: var(--color-text);
+
   font-size: var(--font-size-menu-title);
   font-weight: var(--font-weight-bold);
+
   word-break: break-word;
 }
 
@@ -88,11 +104,17 @@
 
 .orderInfo {
   width: 100%;
+
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
-  padding-top: var(--space-md);
-  border-top: 1px solid var(--color-border);
+
+  padding: var(--space-lg);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background: var(--color-background);
 }
 
 .infoRow,
@@ -100,6 +122,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: var(--space-lg);
 }
 
@@ -110,24 +133,30 @@
 
 .infoValue {
   color: var(--color-text);
+
   font-size: var(--font-size-body);
   font-weight: var(--font-weight-semibold);
+
   text-align: right;
 }
 
 .totalRow {
+  margin-top: var(--space-xs);
   padding-top: var(--space-md);
+
   border-top: 1px solid var(--color-border);
 }
 
 .totalLabel {
   color: var(--color-text);
+
   font-size: var(--font-size-menu-title);
   font-weight: var(--font-weight-semibold);
 }
 
 .totalPrice {
   color: var(--color-text);
+
   font-size: var(--font-size-section-title);
   font-weight: var(--font-weight-bold);
 }
@@ -137,7 +166,8 @@
 -------------------------------- */
 
 .helperMessage {
-  margin: 0;
+  margin: var(--space-sm) 0 0;
+
   color: var(--color-text-muted);
   font-size: var(--font-size-helper);
   line-height: 1.5;
@@ -146,6 +176,8 @@
 .returnButton {
   width: 100%;
   min-height: 48px;
+
+  margin-top: var(--space-xs);
 }
 
 /* --------------------------------
@@ -154,10 +186,13 @@
 
 .statusPage {
   min-height: 100vh;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   padding: var(--page-padding-mobile);
+
   background: var(--color-surface);
 }
 
@@ -169,6 +204,7 @@
 
 .statusTitle {
   margin: 0 0 var(--space-sm);
+
   color: var(--color-text);
   font-size: var(--font-size-section-title);
   font-weight: var(--font-weight-bold);
@@ -176,6 +212,7 @@
 
 .statusMessage {
   margin: 0;
+
   color: var(--color-text-muted);
   font-size: var(--font-size-body);
 }
