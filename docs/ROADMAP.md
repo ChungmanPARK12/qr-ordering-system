@@ -1,332 +1,190 @@
-## Week 4 — UI Polish & Responsive Customer Experience
+## Week 5 — Database & Backend API Integration
 
 ### Objective
 
-Polish the existing QR ordering prototype into a clean and consistent service-like interface before backend integration.
-
-The goal is to keep the existing ordering logic unchanged while improving visual consistency, usability, responsive behavior, and overall product quality.
-
-Main focus:
-
-- Customer ordering flow
-- Shared visual styles
-- Mobile-friendly layouts
-- Clear interaction states
-- Consistent admin/customer UI structure
+Build the database and backend APIs for the existing ordering flow and begin replacing mock data with real server data.
 
 ---
 
-## Day 1 — Design System & Shared UI Foundation(Completed)
+## Day 1 — Database Schema & Prisma Setup
 
 ### Goal
 
-Define the basic visual rules that will be reused across the ordering system.
+Define the core database structure for the ordering system.
 
 ### Tasks
 
-- Define primary UI colors:
-  - primary accent
-  - background
-  - text
-  - muted text
-  - border
-  - disabled / sold-out state
-
-- Define common layout rules:
-  - page width
-  - mobile padding
-  - max-width
-  - section spacing
-  - card spacing
-
-- Define typography hierarchy:
-  - page title
-  - section title
-  - menu title
-  - body text
-  - price
-  - helper text
-
-- Define common UI patterns:
-  - primary button
-  - secondary button
-  - destructive button
-  - cards
-  - input fields
-  - radio / checkbox controls
-  - quantity controls
-
-- Review `globals.css`
-- Decide which styles should be:
-  - global
-  - CSS Module
-  - shared component styles
+- Review current mock data structure
+- Define Prisma models and relationships:
+  - Restaurant
+  - Table
+  - Category
+  - MenuItem
+  - OptionGroup
+  - Option
+- Configure PostgreSQL connection
+- Create and run initial migration
+- Verify Prisma Client connection
 
 ### Expected Output
 
-- Base visual theme established
-- Shared spacing and typography rules defined
-- Common button/card/input styles ready for reuse
+- Core database schema created
+- PostgreSQL connected through Prisma
+- Initial migration completed
 
 ---
 
-## Day 2 — QR Entry Screen Polish(Completed)
+## Day 2 — Database Seed Data
 
 ### Goal
 
-Turn the QR entry page into a clean customer landing screen.
+Replace frontend-only mock restaurant/menu data with reusable database seed data.
 
 ### Tasks
 
-- Polish `/order` QR entry screen
-- Display restaurant branding area
-- Improve restaurant information layout
-- Improve table information display
-- Add clear Start Order button
-- Improve validation/error screens:
-  - Invalid QR
-  - Restaurant not found
-  - Table not found
-  - Table unavailable
-  - Restaurant unavailable
-
-- Create consistent success/error page layout
-- Add mobile-friendly spacing and sizing
+- Create Prisma seed script
+- Add demo restaurant and tables
+- Add categories and menu items
+- Add option groups and options
+- Verify relationships and seeded records
 
 ### Expected Output
 
-- QR entry screen looks like a real customer-facing service
-- Invalid QR states are visually clear
-- Start Order action is prominent
+- Demo ordering data stored in PostgreSQL
+- Database ready for API development
 
 ---
 
-## Day 3 — Menu List Screen Polish(Completed)
+## Day 3 — Restaurant & Table APIs
 
 ### Goal
 
-Create a clean and easy-to-browse restaurant menu experience.
+Support QR entry validation using backend data.
 
 ### Tasks
 
-- Refine restaurant/table header
-- Improve category section layout
-- Improve category typography
-- Refine menu item cards
-- Improve image placeholder
-- Improve menu name / description / price layout
-- Add hover / active states where appropriate
-- Improve sold-out presentation
-- Add clear visual separation between categories
-- Keep responsive card width
-- Add reasonable desktop max-width
-- Review empty category state
+- Add restaurant API
+- Add table lookup API
+- Validate restaurant/table relationship
+- Handle active/inactive states
+- Add basic API error handling
+- Test endpoints
 
 ### Expected Output
 
-- Menu list looks like a production-style restaurant ordering screen
-- Categories and menu items are easy to scan
-- Sold-out items are immediately recognizable
+- QR entry data available through backend APIs
+- Restaurant/table validation moved toward server data
 
 ---
 
-## Day 4 — Menu Detail & Option Selection Polish(Completed)
+## Day 4 — Menu & Option APIs
 
 ### Goal
 
-Improve usability of menu configuration and option selection.
+Serve the complete customer menu from the backend.
 
 ### Tasks
 
-- Polish menu detail layout
-- Improve menu image / placeholder section
-- Improve item name, description, and base price hierarchy
-
-- Style OptionGroup sections:
-  - required indicator
-  - optional indicator
-  - min/max selection hints
-
-- Improve radio controls
-- Improve checkbox controls
-- Improve selected states
-- Improve validation error messages
-
-- Style quantity controls:
-  - minus button
-  - quantity value
-  - plus button
-
-- Make subtotal visually prominent
-- Style Add to Cart button
-- Add spacing between option groups
+- Add category API
+- Add menu item API
+- Include option groups and options
+- Preserve visibility, sold-out, and sorting rules
+- Test API response structure
 
 ### Expected Output
 
-- Customers can configure menu items clearly
-- Required options and validation states are easy to understand
-- Quantity and subtotal controls look service-ready
+- Customer menu data available from backend
+- Menu relationships returned correctly
 
 ---
 
-## Day 5 — Cart Screen Polish(Completed)
+## Day 5 — Customer Frontend API Integration
 
 ### Goal
 
-Create a clear and usable shopping cart experience.
+Replace customer-side mock menu data with backend API data.
 
 ### Tasks
 
-- Improve cart page header
-- Display restaurant/table context cleanly
-- Create Cart Item card layout
-- Group selected options visually
-- Improve quantity controls
-- Style Remove action
-- Improve unit price / subtotal display
-- Make total price prominent
-- Style Proceed to Checkout button
-- Improve empty cart state
-- Add Continue Ordering navigation if useful
+- Connect QR Entry to restaurant/table APIs
+- Connect Menu List to backend data
+- Connect Menu Detail and options
+- Add loading and API error states
+- Preserve existing ordering behavior
 
 ### Expected Output
 
-- Cart items are easy to review and modify
-- Different option configurations are visually distinguishable
-- Total and checkout action are clear
+- Customer flow reads restaurant/menu data from PostgreSQL
+- Core mock-data dependency removed from customer flow
 
 ---
 
-## Day 6 — Checkout & Order Confirmation Polish(Completed)
+## Day 6 — Order Database & Order API
 
 ### Goal
 
-Finish the visual customer ordering journey.
+Store completed customer orders in the database.
 
 ### Tasks
 
-#### Checkout
-
-- Improve order information section
-- Improve order summary cards
-- Display options and quantities clearly
-- Emphasize final total
-- Style Place Order button
-- Improve empty checkout state
-
-#### Confirmation
-
-- Create clear order success state
-- Display confirmation icon / visual area
-- Highlight order number
-- Display:
-  - restaurant
-  - table
-  - total amount
-
-- Improve confirmation message
-- Add clear final action if needed:
-  - Return to Menu
-  - Start New Order
+- Define Order and OrderItem models
+- Store selected options and quantities
+- Add order creation API
+- Generate backend order number
+- Return created order data to frontend
+- Connect Checkout → Order Confirmation
 
 ### Expected Output
 
-- Checkout feels like a final review screen
-- Order confirmation clearly communicates successful ordering
-- Full customer flow has consistent styling
+- Orders persisted in PostgreSQL
+- Confirmation uses real backend order data
 
 ---
 
-## Day 7 — Responsive Review, Admin Cleanup & Full UI Audit(Completed)
+## Day 7 — Backend Integration Review
 
 ### Goal
 
-Review the complete interface and prepare the frontend for backend integration.
+Verify the complete database-backed ordering workflow.
 
 ### Tasks
-
-#### Responsive Testing
-
-- Test customer flow at:
-  - desktop width
-  - tablet width
-  - mobile width
-
-- Review:
-  - card width
-  - text wrapping
-  - image sizes
-  - button sizes
-  - page padding
-  - option controls
-  - cart layout
-
-- Fix obvious responsive issues
-
-#### Admin UI Cleanup
-
-- Apply basic consistent styles to:
-  - Admin Home
-  - Category Management
-  - Menu Management
-  - Option Management
-
-- Keep admin UI practical rather than heavily designed
-- Reuse shared colors / buttons / spacing where possible
-
-#### Full Flow Review
 
 Test:
 
 QR Entry
-→ Menu List
+→ Menu
 → Menu Detail
-→ Option Selection
-→ Add to Cart
 → Cart
 → Checkout
-→ Order Confirmation
+→ Create Order
+→ Confirmation
 
 Review:
 
-- visual consistency
-- interaction states
-- empty states
-- validation states
-- sold-out state
-- responsive layout
+- API responses
+- database relationships
+- validation
+- loading/error states
+- totals and selected options
+- order persistence
+- frontend behavior
 
 ### Expected Output
 
-- Customer ordering flow visually polished
-- Basic admin UI visually consistent
-- Responsive layout verified
-- Frontend ready for backend integration
+- Customer ordering flow connected to backend
+- Core database and APIs verified
+- Project ready for admin CRUD integration
 
 ---
 
-## Week 4 — Definition of Done
+## Week 5 — Definition of Done
 
-- Shared design system established
-- Customer ordering UI polished
-- Error and empty states styled
-- Full customer ordering flow reviewed
-- Responsive behavior reviewed
-- Existing ordering functionality remains intact
-- Frontend ready for backend integration
-- Admin UI cleanup deferred until backend CRUD integration
-
----
-
-## Week 4 — Development Rule
-
-UI changes should not modify existing ordering logic unless required for usability.
-
-Preserve:
-
-- QR/table validation
-- OrderSessionContext
-- Menu and option logic
-- Quantity and price calculations
-- Cart logic
-- Checkout and confirmation flow
+- PostgreSQL and Prisma connected
+- Core restaurant/menu schema implemented
+- Seed data available
+- Restaurant, table, menu, and option APIs working
+- Customer flow uses backend data
+- Orders stored in database
+- Confirmation uses backend-created order data
+- Existing ordering logic remains intact
+- Backend foundation ready for admin CRUD

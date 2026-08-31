@@ -48,6 +48,11 @@ enum PrintJobStatus {
   CANCELLED
 }
 
+enum OptionSelectionType {
+  SINGLE
+  MULTIPLE
+}
+
 model Restaurant {
   id          String  @id @default(cuid())
   name        String
@@ -61,6 +66,7 @@ model Restaurant {
   tables         RestaurantTable[]
   categories     Category[]
   menuItems      MenuItem[]
+  optionGroups   OptionGroup[]
   customerOrders CustomerOrder[]
 
   createdAt DateTime @default(now())
@@ -95,8 +101,9 @@ model RestaurantTable {
   status      TableStatus @default(ACTIVE)
   isActive    Boolean     @default(true)
 
-  restaurantId   String
-  restaurant     Restaurant      @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
   customerOrders CustomerOrder[]
 
   createdAt DateTime @default(now())
@@ -143,7 +150,8 @@ model MenuItem {
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
-  orderItems CustomerOrderItem[]
+  optionGroups OptionGroup[]
+  orderItems   CustomerOrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -155,6 +163,46 @@ model MenuItem {
   @@index([restaurantId, sortOrder])
 }
 
+model OptionGroup {
+  id            String              @id @default(cuid())
+  name          String
+  selectionType OptionSelectionType
+  isRequired    Boolean             @default(false)
+  minSelection  Int                 @default(0)
+  maxSelection  Int                 @default(1)
+  sortOrder     Int                 @default(0)
+
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  menuItems   MenuItem[]
+  optionItems OptionItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([restaurantId, name])
+  @@index([restaurantId])
+  @@index([restaurantId, sortOrder])
+}
+
+model OptionItem {
+  id              String @id @default(cuid())
+  name            String
+  additionalPrice Int    @default(0)
+  sortOrder       Int    @default(0)
+
+  optionGroupId String
+  optionGroup   OptionGroup @relation(fields: [optionGroupId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([optionGroupId, name])
+  @@index([optionGroupId])
+  @@index([optionGroupId, sortOrder])
+}
+
 model CustomerOrder {
   id            String        @id @default(cuid())
   orderNumber   String
@@ -164,7 +212,7 @@ model CustomerOrder {
 
   customerNote   String?
   subtotal       Int
-  discountAmount Int     @default(0)
+  discountAmount Int @default(0)
   totalAmount    Int
 
   restaurantId String
@@ -188,7 +236,7 @@ model CustomerOrder {
 }
 
 model CustomerOrderItem {
-  id                String  @id @default(cuid())
+  id                String @id @default(cuid())
   quantity          Int
   menuNameSnapshot  String
   unitPriceSnapshot Int
