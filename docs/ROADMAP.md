@@ -55,7 +55,7 @@ Replace frontend-only mock restaurant/menu data with reusable database seed data
 
 ---
 
-## Day 3 — Restaurant & Table APIs
+## Day 3 — Restaurant & Table APIs(Completed)
 
 ### Goal
 

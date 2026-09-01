@@ -13,3 +13,11 @@
 - Added option groups and option items
 - Connected menu items with option groups
 - Verified seeded data and relationships in Prisma Studio
+
+### Week 5 — Day 3: Restaurant & Table APIs
+
+- Added Restaurant and Table APIs
+- Added QR entry validation endpoint
+- Added active/inactive and relationship validation
+- Added basic API error handling
+- Verified valid and invalid QR cases
