@@ -6,7 +6,7 @@ Build the database and backend APIs for the existing ordering flow and begin rep
 
 ---
 
-## Day 1 — Database Schema & Prisma Setup
+## Day 1 — Database Schema & Prisma Setup(Completed)
 
 ### Goal
 
@@ -34,7 +34,7 @@ Define the core database structure for the ordering system.
 
 ---
 
-## Day 2 — Database Seed Data
+## Day 2 — Database Seed Data(Completed)
 
 ### Goal
 
