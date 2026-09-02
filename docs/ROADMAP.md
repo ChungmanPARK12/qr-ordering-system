@@ -77,7 +77,7 @@ Support QR entry validation using backend data.
 
 ---
 
-## Day 4 — Menu & Option APIs
+## Day 4 — Menu & Option APIs(Completed)
 
 ### Goal
 
