@@ -21,3 +21,10 @@
 - Added active/inactive and relationship validation
 - Added basic API error handling
 - Verified valid and invalid QR cases
+
+### Week 5 — Day 4: Menu & Option APIs
+
+- Added category and menu APIs
+- Added menu detail API with option groups and items
+- Added visibility, sold-out, and sorting rules
+- Verified menu relationships and API responses
