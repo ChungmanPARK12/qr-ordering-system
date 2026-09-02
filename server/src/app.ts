@@ -5,6 +5,7 @@ import morgan from "morgan";
 
 import restaurantRoutes from "./routes/restaurant.routes";
 import qrRoutes from "./routes/qr.routes";
+import menuRoutes from "./routes/menu.routes";
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.get("/health", (_req, res) => {
 
 app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/qr", qrRoutes);
+app.use("/api/restaurants", menuRoutes);
 
 export default app;
