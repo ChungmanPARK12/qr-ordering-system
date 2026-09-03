@@ -98,7 +98,7 @@ Serve the complete customer menu from the backend.
 
 ---
 
-## Day 5 — Customer Frontend API Integration
+## Day 5 — Customer Frontend API Integration(Completed)
 
 ### Goal
 

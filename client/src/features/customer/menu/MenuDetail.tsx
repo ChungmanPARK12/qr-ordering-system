@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Button from "@/components/ui/Button/Button";
@@ -8,11 +8,7 @@ import Checkbox from "@/components/ui/Checkbox/Checkbox";
 import QuantityControl from "@/components/ui/QuantityControl/QuantityControl";
 import Radio from "@/components/ui/Radio/Radio";
 
-import {
-  mockMenuItems,
-  mockOptionGroups,
-  mockOptionItems,
-} from "@/data/mockMenuData";
+import { getCustomerMenuItem } from "@/lib/api/customerApi";
 
 import { useOrderSession } from "@/features/customer/context/OrderSessionContext";
 import { useCart } from "@/features/customer/context/CartContext";
@@ -25,11 +21,47 @@ type MenuDetailProps = {
   menuItemId: string;
 };
 
+type OptionItem = {
+  id: string;
+  name: string;
+  additionalPrice: number;
+  sortOrder: number;
+  optionGroupId: string;
+};
+
+type OptionGroup = {
+  id: string;
+  name: string;
+  selectionType: "SINGLE" | "MULTIPLE";
+  isRequired: boolean;
+  minSelection: number;
+  maxSelection: number;
+  sortOrder: number;
+  restaurantId: string;
+  optionItems: OptionItem[];
+};
+
+type MenuItem = {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  imageUrl: string | null;
+  sortOrder: number;
+  isVisible: boolean;
+  isSoldOut: boolean;
+  restaurantId: string;
+  categoryId: string;
+  optionGroups: OptionGroup[];
+};
+
 const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
   const router = useRouter();
 
   const { session } = useOrderSession();
   const { addItem } = useCart();
+
+  const [menuItem, setMenuItem] = useState<MenuItem | null>(null);
 
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string[]>
@@ -40,6 +72,59 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
   >({});
 
   const [quantity, setQuantity] = useState(1);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // -----------------------------
+  // Load menu item from backend
+  // -----------------------------
+  useEffect(() => {
+    if (!session) {
+      setIsLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadMenuItem = async () => {
+      try {
+        setIsLoading(true);
+        setErrorMessage(null);
+
+        const data = await getCustomerMenuItem(
+          session.restaurant.id,
+          menuItemId,
+        );
+
+        if (cancelled) {
+          return;
+        }
+
+        setMenuItem(data);
+      } catch (error) {
+        if (cancelled) {
+          return;
+        }
+
+        const message =
+          error instanceof Error ? error.message : "Failed to load menu item.";
+
+        setErrorMessage(message);
+        setMenuItem(null);
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadMenuItem();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [session, menuItemId]);
 
   // -----------------------------
   // Single option selection
@@ -106,12 +191,28 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
   }
 
   // -----------------------------
-  // Find selected menu item
+  // Loading
   // -----------------------------
-  const menuItem = mockMenuItems.find(
-    (item) =>
-      item.id === menuItemId && item.restaurantId === session.restaurant.id,
-  );
+  if (isLoading) {
+    return (
+      <div>
+        <h1>Loading...</h1>
+        <p>Please wait while we load this menu item.</p>
+      </div>
+    );
+  }
+
+  // -----------------------------
+  // API error
+  // -----------------------------
+  if (errorMessage) {
+    return (
+      <div>
+        <h1>Menu Item Error</h1>
+        <p>{errorMessage}</p>
+      </div>
+    );
+  }
 
   // -----------------------------
   // Invalid menu ID
@@ -137,12 +238,7 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
     );
   }
 
-  // -----------------------------
-  // Find option groups
-  // -----------------------------
-  const assignedOptionGroups = mockOptionGroups
-    .filter((group) => group.menuItemIds.includes(menuItem.id))
-    .sort((a, b) => a.sortOrder - b.sortOrder);
+  const assignedOptionGroups = menuItem.optionGroups;
 
   // -----------------------------
   // Validate selected options
@@ -173,9 +269,9 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
   // -----------------------------
   // Selected option items
   // -----------------------------
-  const selectedOptionItems = mockOptionItems.filter((item) =>
-    Object.values(selectedOptions).some((selectedIds) =>
-      selectedIds.includes(item.id),
+  const selectedOptionItems = assignedOptionGroups.flatMap((group) =>
+    group.optionItems.filter((item) =>
+      selectedOptions[group.id]?.includes(item.id),
     ),
   );
 
@@ -208,7 +304,7 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
       const selectedIds = selectedOptions[group.id] ?? [];
 
       selectedIds.forEach((optionItemId) => {
-        const optionItem = mockOptionItems.find(
+        const optionItem = group.optionItems.find(
           (item) => item.id === optionItemId,
         );
 
@@ -277,9 +373,7 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
         {assignedOptionGroups.length > 0 ? (
           <div className={styles.optionGroupList}>
             {assignedOptionGroups.map((group) => {
-              const groupItems = mockOptionItems
-                .filter((item) => item.optionGroupId === group.id)
-                .sort((a, b) => a.sortOrder - b.sortOrder);
+              const groupItems = group.optionItems;
 
               const hasError = Boolean(validationErrors[group.id]);
 
@@ -295,7 +389,7 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
                       <h3 className={styles.optionGroupTitle}>{group.name}</h3>
 
                       <p className={styles.optionHint}>
-                        {group.selectionType === "single"
+                        {group.selectionType === "SINGLE"
                           ? "Select one"
                           : group.minSelection > 0
                             ? `Select ${group.minSelection} to ${group.maxSelection}`
@@ -326,13 +420,14 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
 
                             {item.additionalPrice > 0 && (
                               <span className={styles.optionPrice}>
-                                +${(item.additionalPrice / 100).toFixed(2)}
+                                +$
+                                {(item.additionalPrice / 100).toFixed(2)}
                               </span>
                             )}
                           </div>
                         );
 
-                        if (group.selectionType === "single") {
+                        if (group.selectionType === "SINGLE") {
                           return (
                             <div
                               key={item.id}
@@ -415,6 +510,7 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
       ------------------------------ */}
       <section className={styles.subtotalSection}>
         <span className={styles.subtotalLabel}>Subtotal</span>
+
         <span className={styles.subtotalPrice}>
           ${(itemSubtotal / 100).toFixed(2)}
         </span>
