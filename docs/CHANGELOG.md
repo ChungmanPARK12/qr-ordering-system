@@ -28,3 +28,11 @@
 - Added menu detail API with option groups and items
 - Added visibility, sold-out, and sorting rules
 - Verified menu relationships and API responses
+
+### Week 5 — Day 5: Customer Frontend API Integration
+
+- Connected QR Entry to backend API
+- Connected Menu List and Menu Detail to backend data
+- Removed customer-flow dependency on mock menu data
+- Added loading and API error states
+- Verified full customer ordering flow
