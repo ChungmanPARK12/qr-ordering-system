@@ -1,15 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import Button from "@/components/ui/Button/Button";
 import Card from "@/components/ui/Card/Card";
 
-import {
-  mockRestaurants,
-  mockRestaurantTables,
-} from "@/data/mockRestaurantData";
+import { validateQrEntry } from "@/lib/api/customerApi";
 
 import { useOrderSession } from "@/features/customer/context/OrderSessionContext";
 
@@ -24,37 +21,62 @@ const QREntry = () => {
   const restaurantId = searchParams.get("restaurantId");
   const tableId = searchParams.get("tableId");
 
-  // -----------------------------
-  // Find restaurant from mock data
-  // -----------------------------
-  const restaurant = mockRestaurants.find((item) => item.id === restaurantId);
+  const [entryData, setEntryData] = useState<Awaited<
+    ReturnType<typeof validateQrEntry>
+  > | null>(null);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // -----------------------------
-  // Find table from mock data
-  // -----------------------------
-  const table = mockRestaurantTables.find((item) => item.id === tableId);
-
-  // -----------------------------
-  // Store validated order session
+  // Validate QR entry from backend
   // -----------------------------
   useEffect(() => {
-    if (!restaurant || !table) return;
-
-    if (!restaurant.isActive) return;
-
-    if (!table.isActive || table.status === "INACTIVE") {
+    if (!restaurantId || !tableId) {
+      setIsLoading(false);
       return;
     }
 
-    if (table.restaurantId !== restaurant.id) {
-      return;
-    }
+    let cancelled = false;
 
-    setSession({
-      restaurant,
-      table,
-    });
-  }, [restaurant, table, setSession]);
+    const loadQrEntry = async () => {
+      try {
+        setIsLoading(true);
+        setErrorMessage(null);
+
+        const data = await validateQrEntry(restaurantId, tableId);
+
+        if (cancelled) return;
+
+        setEntryData(data);
+
+        setSession({
+          restaurant: data.restaurant,
+          table: data.table,
+        });
+      } catch (error) {
+        if (cancelled) return;
+
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Failed to validate QR entry.";
+
+        setErrorMessage(message);
+        setEntryData(null);
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadQrEntry();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [restaurantId, tableId, setSession]);
 
   // -----------------------------
   // Shared status / error layout
@@ -88,54 +110,60 @@ const QREntry = () => {
   }
 
   // -----------------------------
-  // Restaurant does not exist
+  // Loading
   // -----------------------------
-  if (!restaurant) {
-    return renderStatusPage(
-      "Restaurant Not Found",
-      "This restaurant could not be found.",
+  if (isLoading) {
+    return (
+      <main className={styles.statusPage}>
+        <Card className={styles.statusCard}>
+          <h1 className={styles.statusTitle}>Checking QR Code...</h1>
+
+          <p className={styles.statusMessage}>
+            Please wait while we confirm your restaurant and table.
+          </p>
+        </Card>
+      </main>
     );
   }
 
   // -----------------------------
-  // Table does not exist
+  // Backend validation error
   // -----------------------------
-  if (!table) {
-    return renderStatusPage(
-      "Table Not Found",
-      "This table could not be found.",
-    );
+  if (errorMessage) {
+    if (errorMessage === "Restaurant not found.") {
+      return renderStatusPage("Restaurant Not Found", errorMessage);
+    }
+
+    if (errorMessage === "Table not found.") {
+      return renderStatusPage("Table Not Found", errorMessage);
+    }
+
+    if (errorMessage === "Table does not belong to this restaurant.") {
+      return renderStatusPage("Invalid Table", errorMessage);
+    }
+
+    if (errorMessage === "Restaurant is currently unavailable.") {
+      return renderStatusPage("Restaurant Unavailable", errorMessage);
+    }
+
+    if (errorMessage === "Table is currently unavailable.") {
+      return renderStatusPage("Table Unavailable", errorMessage);
+    }
+
+    return renderStatusPage("Unable to Start Order", errorMessage);
   }
 
   // -----------------------------
-  // Table belongs to another restaurant
+  // Missing API response
   // -----------------------------
-  if (table.restaurantId !== restaurant.id) {
+  if (!entryData) {
     return renderStatusPage(
-      "Invalid Table",
-      "This table does not belong to this restaurant.",
+      "Unable to Start Order",
+      "Restaurant and table information could not be loaded.",
     );
   }
 
-  // -----------------------------
-  // Restaurant inactive
-  // -----------------------------
-  if (!restaurant.isActive) {
-    return renderStatusPage(
-      "Restaurant Unavailable",
-      "This restaurant is currently unavailable for ordering.",
-    );
-  }
-
-  // -----------------------------
-  // Table inactive
-  // -----------------------------
-  if (!table.isActive || table.status === "INACTIVE") {
-    return renderStatusPage(
-      "Table Unavailable",
-      "This table is currently unavailable for ordering.",
-    );
-  }
+  const { restaurant, table } = entryData;
 
   // -----------------------------
   // Valid QR entry
