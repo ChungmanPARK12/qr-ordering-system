@@ -48,3 +48,34 @@ export const getCustomerMenuItem = async (
 
   return data.data;
 };
+
+export type CreateCustomerOrderItemInput = {
+  menuItemId: string;
+  quantity: number;
+  optionItemIds: string[];
+};
+
+export type CreateCustomerOrderInput = {
+  restaurantId: string;
+  tableId: string;
+  customerNote?: string;
+  items: CreateCustomerOrderItemInput[];
+};
+
+export const createCustomerOrder = async (input: CreateCustomerOrderInput) => {
+  const response = await fetch(`${API_BASE_URL}/api/orders`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to create order.");
+  }
+
+  return data.data;
+};
