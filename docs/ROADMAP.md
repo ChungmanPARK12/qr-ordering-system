@@ -119,29 +119,38 @@ Replace customer-side mock menu data with backend API data.
 
 ---
 
-## Day 6 — Order Database & Order API
+## Day 6 — Order Database & Order API(Completed)
 
 ### Goal
 
-Store completed customer orders in the database.
+Persist completed customer orders and use real backend order data in confirmation.
 
 ### Tasks
 
-- Define Order and OrderItem models
-- Store selected options and quantities
-- Add order creation API
+- Review existing CustomerOrder and CustomerOrderItem schema
+- Add missing order snapshot fields if needed
+- Store selected options with each order item
+- Define frontend → backend order request structure
+- Add order creation service
+- Create order and items using a Prisma transaction
 - Generate backend order number
+- Add POST order creation API
+- Validate restaurant, table, menu items, and order data
 - Return created order data to frontend
-- Connect Checkout → Order Confirmation
+- Connect Checkout to order creation API
+- Replace temporary confirmation data with backend order data
+- Verify persisted orders in Prisma Studio/PostgreSQL
 
 ### Expected Output
 
-- Orders persisted in PostgreSQL
-- Confirmation uses real backend order data
+- Orders and order items persisted in PostgreSQL
+- Selected options and quantities preserved
+- Backend generates the real order number
+- Confirmation uses persisted backend order data
 
 ---
 
-## Day 7 — Backend Integration Review
+## Day 7 — Backend Integration Review(Completed)
 
 ### Goal
 

@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button/Button";
 import Card from "@/components/ui/Card/Card";
 
+import { createCustomerOrder } from "@/lib/api/customerApi";
+
 import { useCart } from "@/features/customer/context/CartContext";
 import { useOrderSession } from "@/features/customer/context/OrderSessionContext";
 
@@ -18,6 +20,8 @@ const CheckoutScreen = () => {
   const { items, totalPrice, clearCart } = useCart();
 
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // -----------------------------
   // Prevent direct access
@@ -75,20 +79,42 @@ const CheckoutScreen = () => {
   // -----------------------------
   // Place Order
   // -----------------------------
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     if (isPlacingOrder) {
       return;
     }
 
-    setIsPlacingOrder(true);
+    try {
+      setIsPlacingOrder(true);
+      setErrorMessage(null);
 
-    const mockOrderNumber = `ORDER-${Date.now()}`;
+      const orderItems = items.map((item) => ({
+        menuItemId: item.menuItemId,
+        quantity: item.quantity,
+        optionItemIds: item.selectedOptions.map(
+          (option) => option.optionItemId,
+        ),
+      }));
 
-    router.push(
-      `/order/confirmation?orderNumber=${mockOrderNumber}&total=${totalPrice}`,
-    );
+      const createdOrder = await createCustomerOrder({
+        restaurantId: session.restaurant.id,
+        tableId: session.table.id,
+        items: orderItems,
+      });
 
-    clearCart();
+      clearCart();
+
+      router.push(
+        `/order/confirmation?orderNumber=${createdOrder.orderNumber}&total=${createdOrder.totalAmount}`,
+      );
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to place order.";
+
+      setErrorMessage(message);
+    } finally {
+      setIsPlacingOrder(false);
+    }
   };
 
   return (
@@ -189,6 +215,8 @@ const CheckoutScreen = () => {
             ${(totalPrice / 100).toFixed(2)}
           </span>
         </div>
+
+        {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
 
         <Button
           className={styles.placeOrderButton}

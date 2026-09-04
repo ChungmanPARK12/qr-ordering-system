@@ -212,7 +212,7 @@ model CustomerOrder {
 
   customerNote   String?
   subtotal       Int
-  discountAmount Int @default(0)
+  discountAmount Int     @default(0)
   totalAmount    Int
 
   restaurantId String
@@ -236,12 +236,16 @@ model CustomerOrder {
 }
 
 model CustomerOrderItem {
-  id                String @id @default(cuid())
-  quantity          Int
+  id       String @id @default(cuid())
+  quantity Int
+
   menuNameSnapshot  String
+  basePriceSnapshot Int
   unitPriceSnapshot Int
-  lineTotal         Int
-  customerNote      String?
+  selectedOptions   Json
+
+  lineTotal    Int
+  customerNote String?
 
   customerOrderId String
   customerOrder   CustomerOrder @relation(fields: [customerOrderId], references: [id], onDelete: Cascade)
