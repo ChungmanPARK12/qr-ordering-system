@@ -38,7 +38,7 @@ const generateOrderNumber = () => {
 export const createCustomerOrder = async (input: CreateOrderInput) => {
   const { restaurantId, tableId, customerNote, items } = input;
 
-  if (!items.length) {
+  if (!Array.isArray(items) || items.length === 0) {
     throw new Error("Order must contain at least one item.");
   }
 
@@ -86,10 +86,42 @@ export const createCustomerOrder = async (input: CreateOrderInput) => {
   const preparedItems: PreparedOrderItem[] = [];
 
   for (const item of items) {
-    if (item.quantity < 1) {
-      throw new Error("Item quantity must be at least 1.");
+    // -----------------------------
+    // Validate order item input
+    // -----------------------------
+    if (typeof item.menuItemId !== "string") {
+      throw new Error("menuItemId must be a string.");
     }
 
+    if (
+      typeof item.quantity !== "number" ||
+      !Number.isInteger(item.quantity) ||
+      item.quantity < 1
+    ) {
+      throw new Error("Item quantity must be a positive integer.");
+    }
+
+    if (
+      !Array.isArray(item.optionItemIds) ||
+      !item.optionItemIds.every(
+        (optionItemId) => typeof optionItemId === "string",
+      )
+    ) {
+      throw new Error("optionItemIds must be an array of strings.");
+    }
+
+    // -----------------------------
+    // Prevent duplicate options
+    // -----------------------------
+    const uniqueOptionItemIds = new Set(item.optionItemIds);
+
+    if (uniqueOptionItemIds.size !== item.optionItemIds.length) {
+      throw new Error("Duplicate option items are not allowed.");
+    }
+
+    // -----------------------------
+    // Validate menu item
+    // -----------------------------
     const menuItem = await prisma.menuItem.findFirst({
       where: {
         id: item.menuItemId,
