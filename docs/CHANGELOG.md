@@ -156,3 +156,19 @@
 
 - Production code review
 - Identify and prioritize refactoring targets
+
+### Production Code Review — QR Entry
+
+- Started production code review with the customer QR entry flow
+- Reviewed QR validation, loading, error handling, and order session setup
+- Confirmed backend validation remains the final trust boundary for restaurant/table data
+- Reviewed async request cancellation guard and session state flow
+- Identified frontend message-based error matching as a future improvement
+  - Backend already provides structured error codes
+  - Keep current implementation until error-specific behavior requires structured frontend errors
+- Reviewed `OrderSessionContext` and confirmed the current Context-based session structure is appropriate
+- Noted that order session is currently memory-only and resets on refresh/direct navigation
+
+### Next
+
+- Continue production code review from the customer menu flow
