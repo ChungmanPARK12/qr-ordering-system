@@ -4,33 +4,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Card from "@/components/ui/Card/Card";
+
 import { getCustomerMenu } from "@/lib/api/customerApi";
+
 import { useOrderSession } from "@/features/customer/context/OrderSessionContext";
 
+import type { MenuCategory } from "@/types/menu.types";
+
 import styles from "./MenuList.module.css";
-
-type MenuItem = {
-  id: string;
-  name: string;
-  description: string | null;
-  price: number;
-  imageUrl: string | null;
-  sortOrder: number;
-  isVisible: boolean;
-  isSoldOut: boolean;
-  restaurantId: string;
-  categoryId: string;
-};
-
-type MenuCategory = {
-  id: string;
-  name: string;
-  description: string | null;
-  sortOrder: number;
-  isVisible: boolean;
-  restaurantId: string;
-  menuItems: MenuItem[];
-};
 
 const MenuList = () => {
   const router = useRouter();
@@ -140,7 +121,9 @@ const MenuList = () => {
 
   return (
     <main className={styles.page}>
-      {/* Restaurant / table information */}
+      {/* -----------------------------
+          Restaurant / Table
+      ------------------------------ */}
       <header className={styles.header}>
         <h1 className={styles.restaurantName}>{session.restaurant.name}</h1>
 
@@ -149,7 +132,9 @@ const MenuList = () => {
 
       <h2 className={styles.menuTitle}>Menu</h2>
 
-      {/* No visible categories */}
+      {/* -----------------------------
+          No visible categories
+      ------------------------------ */}
       {categories.length === 0 ? (
         <p className={styles.emptyMessage}>
           No menu categories are currently available.
@@ -165,6 +150,9 @@ const MenuList = () => {
               </p>
             )}
 
+            {/* -----------------------------
+                Menu Items
+            ------------------------------ */}
             {category.menuItems.length > 0 ? (
               <div className={styles.menuList}>
                 {category.menuItems.map((menuItem) => (
@@ -181,7 +169,9 @@ const MenuList = () => {
                       router.push(`/order/menu/${menuItem.id}`);
                     }}
                   >
-                    {/* Menu image / placeholder */}
+                    {/* -----------------------------
+                        Menu Image
+                    ------------------------------ */}
                     <div className={styles.imagePlaceholder}>
                       {menuItem.imageUrl ? (
                         <img
@@ -194,7 +184,9 @@ const MenuList = () => {
                       )}
                     </div>
 
-                    {/* Menu information */}
+                    {/* -----------------------------
+                        Menu Information
+                    ------------------------------ */}
                     <div className={styles.menuInfo}>
                       <h3 className={styles.menuName}>{menuItem.name}</h3>
 

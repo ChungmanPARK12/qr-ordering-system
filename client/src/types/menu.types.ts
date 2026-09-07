@@ -1,20 +1,38 @@
-// Menu types
+// -----------------------------
+// Component Props
+// -----------------------------
+
+export type MenuDetailProps = {
+  menuItemId: string;
+};
+
+// -----------------------------
+// Category
+// -----------------------------
 
 export type Category = {
   id: string;
   name: string;
-  description?: string;
+  description: string | null;
   sortOrder: number;
   isVisible: boolean;
   restaurantId: string;
 };
 
+export type MenuCategory = Category & {
+  menuItems: MenuItem[];
+};
+
+// -----------------------------
+// Menu
+// -----------------------------
+
 export type MenuItem = {
   id: string;
   name: string;
-  description?: string;
+  description: string | null;
   price: number;
-  imageUrl?: string;
+  imageUrl: string | null;
   sortOrder: number;
   isVisible: boolean;
   isSoldOut: boolean;
@@ -22,36 +40,38 @@ export type MenuItem = {
   categoryId: string;
 };
 
-// Option types
+export type MenuItemDetail = MenuItem & {
+  optionGroups: OptionGroup[];
+};
 
-export type OptionSelectionType = "single" | "multiple";
+// -----------------------------
+// Option
+// -----------------------------
+
+export type OptionSelectionType = "SINGLE" | "MULTIPLE";
 
 export type OptionGroup = {
   id: string;
   name: string;
-
   selectionType: OptionSelectionType;
-
   isRequired: boolean;
   minSelection: number;
   maxSelection: number;
-
   sortOrder: number;
-
   restaurantId: string;
-
-  // Menu items using this option group
-  menuItemIds: string[];
+  optionItems: OptionItem[];
 };
 
 export type OptionItem = {
   id: string;
   name: string;
-
-  // Stored in cents
   additionalPrice: number;
-
   sortOrder: number;
-
   optionGroupId: string;
 };
+
+// -----------------------------
+// API Response
+// -----------------------------
+
+export type CustomerMenuResponse = MenuCategory[];

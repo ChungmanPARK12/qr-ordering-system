@@ -10,6 +10,8 @@ import { validateQrEntry } from "@/lib/api/customerApi";
 
 import { useOrderSession } from "@/features/customer/context/OrderSessionContext";
 
+import type { QrEntryResponse } from "@/types/restaurant.types";
+
 import styles from "./QREntry.module.css";
 
 const QREntry = () => {
@@ -21,9 +23,7 @@ const QREntry = () => {
   const restaurantId = searchParams.get("restaurantId");
   const tableId = searchParams.get("tableId");
 
-  const [entryData, setEntryData] = useState<Awaited<
-    ReturnType<typeof validateQrEntry>
-  > | null>(null);
+  const [entryData, setEntryData] = useState<QrEntryResponse | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
