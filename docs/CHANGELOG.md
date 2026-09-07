@@ -130,3 +130,29 @@
 - **Regression Retesting**
   - Repeated failed API requests after fixes
   - Confirmed duplicate options and invalid quantities are now rejected
+
+  ### Refactoring Preparation & Functional Retest
+
+- Started refactoring preparation after completing frontend–backend integration
+- Identified duplicated and inconsistent frontend type definitions during the initial refactoring review
+- Centralized shared customer-side types under `src/types`
+- Replaced local/duplicated types and rechecked frontend–backend type contracts
+- Retested the complete customer ordering workflow after type consolidation:
+  - QR restaurant/table validation
+  - Menu and menu detail loading
+  - Option selection and price calculation
+  - Cart and checkout flow
+  - Order creation and confirmation
+- Verified `CustomerOrder` and `CustomerOrderItem` persistence in PostgreSQL
+- Retested exception cases:
+  - Invalid restaurant
+  - Invalid table
+  - Missing order session
+  - Sold-out menu interaction
+- Confirmed direct navigation/refresh currently resets the in-memory order session
+- Established a stable functional baseline before refactoring
+
+### Next
+
+- Production code review
+- Identify and prioritize refactoring targets

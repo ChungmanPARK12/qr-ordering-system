@@ -1,15 +1,24 @@
 // src/types/cart.types.ts
 
+import type { ReactNode } from "react";
+
+// -----------------------------
+// Cart Option
+// -----------------------------
+
 export type CartOptionItem = {
   optionGroupId: string;
   optionGroupName: string;
-
   optionItemId: string;
   optionItemName: string;
 
   // Additional price in cents
   additionalPrice: number;
 };
+
+// -----------------------------
+// Cart Item
+// -----------------------------
 
 export type CartItem = {
   // Unique Cart line ID
@@ -34,4 +43,42 @@ export type CartItem = {
 
   // unitPrice * quantity
   subtotal: number;
+};
+
+// -----------------------------
+// Cart Input
+// -----------------------------
+
+export type AddCartItemInput = {
+  menuItemId: string;
+  menuItemName: string;
+  basePrice: number;
+  selectedOptions: CartOptionItem[];
+  quantity: number;
+};
+
+// -----------------------------
+// Cart Context
+// -----------------------------
+
+export type CartContextValue = {
+  items: CartItem[];
+
+  addItem: (item: AddCartItemInput) => void;
+
+  removeItem: (cartItemId: string) => void;
+
+  updateQuantity: (cartItemId: string, quantity: number) => void;
+
+  clearCart: () => void;
+
+  totalPrice: number;
+};
+
+// -----------------------------
+// Component Props
+// -----------------------------
+
+export type CartProviderProps = {
+  children: ReactNode;
 };

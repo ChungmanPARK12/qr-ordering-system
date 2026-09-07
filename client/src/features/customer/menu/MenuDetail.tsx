@@ -14,46 +14,9 @@ import { useOrderSession } from "@/features/customer/context/OrderSessionContext
 import { useCart } from "@/features/customer/context/CartContext";
 
 import type { CartOptionItem } from "@/types/cart.types";
+import type { MenuDetailProps, MenuItemDetail } from "@/types/menu.types";
 
 import styles from "./MenuDetail.module.css";
-
-type MenuDetailProps = {
-  menuItemId: string;
-};
-
-type OptionItem = {
-  id: string;
-  name: string;
-  additionalPrice: number;
-  sortOrder: number;
-  optionGroupId: string;
-};
-
-type OptionGroup = {
-  id: string;
-  name: string;
-  selectionType: "SINGLE" | "MULTIPLE";
-  isRequired: boolean;
-  minSelection: number;
-  maxSelection: number;
-  sortOrder: number;
-  restaurantId: string;
-  optionItems: OptionItem[];
-};
-
-type MenuItem = {
-  id: string;
-  name: string;
-  description: string | null;
-  price: number;
-  imageUrl: string | null;
-  sortOrder: number;
-  isVisible: boolean;
-  isSoldOut: boolean;
-  restaurantId: string;
-  categoryId: string;
-  optionGroups: OptionGroup[];
-};
 
 const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
   const router = useRouter();
@@ -61,7 +24,7 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
   const { session } = useOrderSession();
   const { addItem } = useCart();
 
-  const [menuItem, setMenuItem] = useState<MenuItem | null>(null);
+  const [menuItem, setMenuItem] = useState<MenuItemDetail | null>(null);
 
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string[]>
@@ -374,7 +337,6 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
           <div className={styles.optionGroupList}>
             {assignedOptionGroups.map((group) => {
               const groupItems = group.optionItems;
-
               const hasError = Boolean(validationErrors[group.id]);
 
               return (

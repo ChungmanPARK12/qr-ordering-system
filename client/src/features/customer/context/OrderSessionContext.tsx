@@ -1,33 +1,16 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 
-import type { Restaurant, RestaurantTable } from "@/types/restaurant.types";
-
-type OrderSession = {
-  restaurant: Restaurant;
-  table: RestaurantTable;
-};
-
-type OrderSessionContextType = {
-  session: OrderSession | null;
-  setSession: (session: OrderSession) => void;
-  clearSession: () => void;
-};
+import type {
+  OrderSession,
+  OrderSessionContextType,
+  OrderSessionProviderProps,
+} from "@/types/restaurant.types";
 
 const OrderSessionContext = createContext<OrderSessionContextType | undefined>(
   undefined,
 );
-
-type OrderSessionProviderProps = {
-  children: ReactNode;
-};
 
 export const OrderSessionProvider = ({
   children,

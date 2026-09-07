@@ -1,10 +1,19 @@
+import type { QrEntryResponse } from "@/types/restaurant.types";
+
+import type { CustomerMenuResponse, MenuItemDetail } from "@/types/menu.types";
+
+import type {
+  CreateCustomerOrderInput,
+  CreateCustomerOrderResponse,
+} from "@/types/order.types";
+
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4001";
 
 export const validateQrEntry = async (
   restaurantId: string,
   tableId: string,
-) => {
+): Promise<QrEntryResponse> => {
   const response = await fetch(
     `${API_BASE_URL}/api/qr/validate?restaurantId=${restaurantId}&tableId=${tableId}`,
   );
@@ -18,7 +27,9 @@ export const validateQrEntry = async (
   return data.data;
 };
 
-export const getCustomerMenu = async (restaurantId: string) => {
+export const getCustomerMenu = async (
+  restaurantId: string,
+): Promise<CustomerMenuResponse> => {
   const response = await fetch(
     `${API_BASE_URL}/api/restaurants/${restaurantId}/menu`,
   );
@@ -35,7 +46,7 @@ export const getCustomerMenu = async (restaurantId: string) => {
 export const getCustomerMenuItem = async (
   restaurantId: string,
   menuItemId: string,
-) => {
+): Promise<MenuItemDetail> => {
   const response = await fetch(
     `${API_BASE_URL}/api/restaurants/${restaurantId}/menu/${menuItemId}`,
   );
@@ -49,20 +60,9 @@ export const getCustomerMenuItem = async (
   return data.data;
 };
 
-export type CreateCustomerOrderItemInput = {
-  menuItemId: string;
-  quantity: number;
-  optionItemIds: string[];
-};
-
-export type CreateCustomerOrderInput = {
-  restaurantId: string;
-  tableId: string;
-  customerNote?: string;
-  items: CreateCustomerOrderItemInput[];
-};
-
-export const createCustomerOrder = async (input: CreateCustomerOrderInput) => {
+export const createCustomerOrder = async (
+  input: CreateCustomerOrderInput,
+): Promise<CreateCustomerOrderResponse> => {
   const response = await fetch(`${API_BASE_URL}/api/orders`, {
     method: "POST",
     headers: {
