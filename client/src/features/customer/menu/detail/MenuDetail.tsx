@@ -13,8 +13,9 @@ import { getCustomerMenuItem } from "@/lib/api/customerApi";
 import { useOrderSession } from "@/features/customer/context/OrderSessionContext";
 import { useCart } from "@/features/customer/context/CartContext";
 
-import type { CartOptionItem } from "@/types/cart.types";
 import type { MenuDetailProps, MenuItemDetail } from "@/types/menu.types";
+
+import { buildCartOptions, validateOptionSelections } from "./menuOption.utils";
 
 import styles from "./MenuDetail.module.css";
 
@@ -205,24 +206,13 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
 
   // -----------------------------
   // Validate selected options
+  // Validation logic is handled in menuOption.utils
   // -----------------------------
   const validateOptions = () => {
-    const errors: Record<string, string> = {};
-
-    assignedOptionGroups.forEach((group) => {
-      const selectedCount = selectedOptions[group.id]?.length ?? 0;
-
-      if (selectedCount < group.minSelection) {
-        errors[group.id] =
-          `Please select at least ${group.minSelection} option(s).`;
-        return;
-      }
-
-      if (selectedCount > group.maxSelection) {
-        errors[group.id] =
-          `You can select up to ${group.maxSelection} option(s).`;
-      }
-    });
+    const errors = validateOptionSelections(
+      assignedOptionGroups,
+      selectedOptions,
+    );
 
     setValidationErrors(errors);
 
@@ -252,7 +242,8 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
   const itemSubtotal = (menuItem.price + optionsTotal) * quantity;
 
   // -----------------------------
-  // Add configured item to cart
+  // Add to cart
+  // Add to cart logic is handled in menuOption.utils
   // -----------------------------
   const handleAddToCart = () => {
     const isValid = validateOptions();
@@ -261,29 +252,7 @@ const MenuDetail = ({ menuItemId }: MenuDetailProps) => {
       return;
     }
 
-    const cartOptions: CartOptionItem[] = [];
-
-    assignedOptionGroups.forEach((group) => {
-      const selectedIds = selectedOptions[group.id] ?? [];
-
-      selectedIds.forEach((optionItemId) => {
-        const optionItem = group.optionItems.find(
-          (item) => item.id === optionItemId,
-        );
-
-        if (!optionItem) {
-          return;
-        }
-
-        cartOptions.push({
-          optionGroupId: group.id,
-          optionGroupName: group.name,
-          optionItemId: optionItem.id,
-          optionItemName: optionItem.name,
-          additionalPrice: optionItem.additionalPrice,
-        });
-      });
-    });
+    const cartOptions = buildCartOptions(assignedOptionGroups, selectedOptions);
 
     addItem({
       menuItemId: menuItem.id,

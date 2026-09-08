@@ -1,6 +1,6 @@
 // src/app/order/menu/[menuItemId]/page.tsx
 
-import MenuDetail from "@/features/customer/menu/MenuDetail";
+import MenuDetail from "@/features/customer/menu/detail/MenuDetail";
 
 type PageProps = {
   params: Promise<{
