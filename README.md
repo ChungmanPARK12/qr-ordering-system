@@ -94,3 +94,5 @@ This project is being developed as a practical full-stack application with empha
 - Transactional order persistence
 - Maintainable TypeScript code
 - Production-oriented code review and refactoring
+
+---
