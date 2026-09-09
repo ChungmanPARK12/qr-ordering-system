@@ -2,7 +2,7 @@
 
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 
 import type {
   AddCartItemInput,
@@ -139,11 +139,11 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   };
 
   // -----------------------------
-  // Clear entire Cart
+  // Clear Cart for a new order session
   // -----------------------------
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setItems([]);
-  };
+  }, []);
 
   // -----------------------------
   // Calculate entire Cart total

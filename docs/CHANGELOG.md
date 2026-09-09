@@ -157,7 +157,7 @@
 - Production code review
 - Identify and prioritize refactoring targets
 
-### Production Code Review — QR Entry
+### 2026/09/07 Production Code Review — QR Entry
 
 - Started production code review with the customer QR entry flow
 - Reviewed QR validation, loading, error handling, and order session setup
@@ -172,3 +172,95 @@
 ### Next
 
 - Continue production code review from the customer menu flow
+
+## 2026/09/08 — Production Code Review
+
+### Menu Route
+
+- Reviewed `order/menu/page.tsx`
+- Production Ready: Thin route structure with clear responsibility
+- No changes required
+
+### MenuList
+
+- Production Ready: Session-based menu loading flow is appropriate
+- Production Ready: `cancelled` guard prevents stale async updates
+- Production Ready: Backend remains the validation/security trust boundary
+- Future Improvement: Simplify repeated header/loading/error JSX
+- Future Improvement: Avoid exposing raw API error messages to customers
+- Future Improvement: Consider `MenuItemCard` separation if complexity grows
+
+### Result
+
+- No production blockers
+- Production-appropriate with minor future improvements
+
+## MenuDetail Production Review & Refactor
+
+### MenuDetail
+
+- Reviewed menu detail, option selection, validation, pricing, and cart flow
+- Separated option validation into `menuOption.utils.ts`
+- Separated cart option mapping into `menuOption.utils.ts`
+- Kept UI state and Add to Cart orchestration inside `MenuDetail`
+- Restored validation guard before adding items to cart
+- Verified required options, cart mapping, quantity, subtotal, and routing
+- Confirmed no regression after refactoring
+
+### Review Notes
+
+- Future Improvement: Reset configuration state when `menuItemId` or session changes
+- Future Improvement: Separate customer-facing errors from internal API errors
+- No production blockers found
+
+## 2026/09/08 — Cart Production Review
+
+### Cart Route
+
+- Reviewed `/order/cart` route structure
+- Confirmed route remains thin and delegates cart behavior to `CartScreen`
+- No changes required
+
+### CartScreen
+
+- Reviewed session guard, empty cart state, cart item rendering, quantity controls, option display, and navigation
+- Confirmed cart state and calculations are delegated to `CartContext`
+- Confirmed no unnecessary API or business logic is handled in the UI component
+- Future Improvement: Consider shared currency formatting utility if formatting logic expands
+
+### CartContext
+
+- Reviewed cart state management, item merging, option comparison, quantity updates, removal, clearing, subtotal, and total price calculation
+- Confirmed same menu item with the same option combination merges quantity correctly
+- Confirmed different option combinations create separate cart items
+- Confirmed client-side pricing is appropriate for UI display only
+- Future Improvement: Review cart lifecycle when a new QR order session is created
+- Future Improvement: Consider stronger cart item ID generation than `Date.now()` if needed
+- Future Improvement: Confirm `optionItemId` uniqueness assumption used by option comparison
+- No production blockers found
+
+## 2026/09/09 — Order Session & Checkout Production Review
+
+### Order Session / Cart Lifecycle
+
+- Reviewed cart lifecycle across QR order sessions
+- Clear the previous cart when the restaurant or table changes
+- Preserve the cart when the same table QR is scanned again
+- Preserve the existing session and cart when QR validation fails
+- Stabilized `clearCart` with `useCallback`
+
+### Checkout & Order Creation
+
+- Reviewed Checkout request and backend order creation flow
+- Confirmed frontend sends menu/option IDs and quantity without trusting client-side prices
+- Confirmed backend validates restaurant, table, menu items, options, quantities, and sold-out status
+- Confirmed menu and option prices are loaded from the database
+- Confirmed subtotal and total amount are calculated server-side
+- Confirmed authoritative price snapshots are stored with the order
+
+### Review Notes
+
+- Future Improvement: Use stronger order number generation than `Date.now()`
+- Future Improvement: Add validation for `customerNote` when the feature is introduced
+- Future Improvement: Improve backend error status/code separation as the API grows
+- No production blockers found

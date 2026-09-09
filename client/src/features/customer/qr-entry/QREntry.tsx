@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import Button from "@/components/ui/Button/Button";
@@ -9,6 +9,7 @@ import Card from "@/components/ui/Card/Card";
 import { validateQrEntry } from "@/lib/api/customerApi";
 
 import { useOrderSession } from "@/features/customer/context/OrderSessionContext";
+import { useCart } from "@/features/customer/context/CartContext";
 
 import type { QrEntryResponse } from "@/types/restaurant.types";
 
@@ -18,7 +19,10 @@ const QREntry = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const { setSession } = useOrderSession();
+  const { session, setSession } = useOrderSession();
+  const { clearCart } = useCart();
+
+  const sessionRef = useRef(session);
 
   const restaurantId = searchParams.get("restaurantId");
   const tableId = searchParams.get("tableId");
@@ -27,6 +31,14 @@ const QREntry = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // -----------------------------
+  // Keep latest order session
+  // without retriggering QR validation
+  // -----------------------------
+  useEffect(() => {
+    sessionRef.current = session;
+  }, [session]);
 
   // -----------------------------
   // Validate QR entry from backend
@@ -48,12 +60,26 @@ const QREntry = () => {
 
         if (cancelled) return;
 
+        const currentSession = sessionRef.current;
+
+        const hasOrderContextChanged =
+          currentSession?.restaurant.id !== data.restaurant.id ||
+          currentSession?.table.id !== data.table.id;
+
+        // Clear previous cart when restaurant or table changes
+        if (hasOrderContextChanged) {
+          clearCart();
+        }
+
         setEntryData(data);
 
-        setSession({
+        const newSession = {
           restaurant: data.restaurant,
           table: data.table,
-        });
+        };
+
+        setSession(newSession);
+        sessionRef.current = newSession;
       } catch (error) {
         if (cancelled) return;
 
@@ -76,7 +102,7 @@ const QREntry = () => {
     return () => {
       cancelled = true;
     };
-  }, [restaurantId, tableId, setSession]);
+  }, [restaurantId, tableId, setSession, clearCart]);
 
   // -----------------------------
   // Shared status / error layout
