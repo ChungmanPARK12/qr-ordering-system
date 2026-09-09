@@ -1,8 +1,6 @@
 # QR Ordering System
 
-# QR Ordering System
-
-A **full-stack QR-based restaurant ordering system** built with **Next.js, TypeScript, Node.js, Express, PostgreSQL, and Prisma**.
+A full-stack QR-based restaurant ordering system built with **Next.js, TypeScript, Node.js, Express, PostgreSQL, and Prisma**.
 
 The project simulates a real restaurant ordering workflow where customers scan a table QR code, browse the restaurant menu, configure menu options, manage their cart, and submit an order that is **validated and persisted by the backend**.
 
@@ -14,30 +12,21 @@ The project is being developed with a **production-oriented approach**, focusing
 
 ### Customer Ordering
 
-- QR-based restaurant and table entry
-- Backend validation of restaurant and table information
-- Category-based menu browsing
-- Menu item detail pages
-- Required and optional menu options
-- Single and multiple option selection
-- Sold-out menu handling
-- Cart management
-- Quantity controls
-- Checkout and order summary
-- Persistent order creation
-- Backend-generated order number
-- Order confirmation
+- QR-based restaurant and table ordering
+- Category-based menu browsing with menu options
+- Sold-out and menu availability handling
+- Cart, quantity, and option management
+- Checkout with server-validated order creation
+- Persistent orders with backend-generated order confirmation
 
 ### Admin Management
 
 - Admin dashboard
-- Category management interface
-- Menu management interface
-- Option group and option item management interface
-- Required/optional option configuration
+- Category and menu management
+- Option group and option item management
 - Menu visibility and sold-out management
 
-> Admin management currently uses the existing prototype UI and is being integrated with the backend CRUD APIs and PostgreSQL database.
+> Admin management is currently being integrated with backend CRUD APIs and PostgreSQL.
 
 ---
 
