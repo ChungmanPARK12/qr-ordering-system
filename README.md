@@ -30,36 +30,6 @@ The project is being developed with a **production-oriented approach**, focusing
 
 ---
 
-## Tech Stack
-
-### Frontend
-
-- Next.js
-- React
-- TypeScript
-- CSS Modules
-- Context API
-
-### Backend
-
-- Node.js
-- Express
-- TypeScript
-- Prisma ORM
-
-### Database
-
-- PostgreSQL
-
-### Development Tools
-
-- Git / GitHub
-- Postman
-- Prisma Studio
-- VS Code
-
----
-
 ## Application Flow
 
 The customer ordering flow covers the complete restaurant ordering lifecycle:
