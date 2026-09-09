@@ -1,10 +1,12 @@
 # QR Ordering System
 
-A full-stack QR-based restaurant ordering system built with Next.js, TypeScript, Node.js, Express, PostgreSQL, and Prisma.
+# QR Ordering System
 
-The project simulates a real restaurant ordering workflow where customers scan a table QR code, browse the restaurant menu, configure menu options, manage their cart, and submit an order that is validated and persisted by the backend.
+A **full-stack QR-based restaurant ordering system** built with **Next.js, TypeScript, Node.js, Express, PostgreSQL, and Prisma**.
 
-The project is being developed with a production-oriented approach, focusing on clear frontend/backend responsibilities, server-side validation, database integrity, and maintainable application architecture.
+The project simulates a real restaurant ordering workflow where customers scan a table QR code, browse the restaurant menu, configure menu options, manage their cart, and submit an order that is **validated and persisted by the backend**.
+
+The project is being developed with a **production-oriented approach**, focusing on clear frontend/backend responsibilities, **server-side validation, database integrity, and maintainable application architecture**.
 
 ---
 
@@ -71,122 +73,36 @@ The project is being developed with a production-oriented approach, focusing on 
 
 ## Application Flow
 
-The customer ordering flow follows the complete restaurant ordering lifecycle:
+The customer ordering flow covers the complete restaurant ordering lifecycle:
 
-```text
-QR Entry
-   ↓
-Restaurant / Table Validation
-   ↓
-Menu
-   ↓
-Menu Detail & Options
-   ↓
-Cart
-   ↓
-Checkout
-   ↓
-Backend Order Validation
-   ↓
-Order Creation
-   ↓
-Confirmation
-```
+`QR Entry` → `Restaurant / Table Validation` → `Menu` → `Menu Detail & Options` → `Cart` → `Checkout` → `Backend Order Validation` → `Order Creation` → `Confirmation`
+
+Customer menu and restaurant data are retrieved from PostgreSQL through backend APIs rather than frontend mock data.
+
+---
 
 ## Backend Validation & Data Integrity
 
-The backend acts as the final trust boundary for customer orders.
+Customer orders are validated and priced on the server rather than trusting client-side values.
 
-When an order is submitted, the frontend sends identifiers and quantities rather than trusted price values.
-
-The backend:
-
-- Validates the restaurant and table
-- Verifies that the table belongs to the restaurant
-- Validates menu item availability and sold-out status
-- Validates selected option items and option group rules
-- Validates item quantities
-- Retrieves menu and option prices from the database
-- Calculates unit prices, line totals, and the final order total server-side
-- Stores order-time price and menu snapshots
-- Persists the order and order items using a Prisma transaction
-
-Client-side prices are used for UI display only and are not treated as authoritative order values.
+- Validates restaurant, table, menu, option, and quantity data
+- Recalculates menu and option prices using database values
+- Enforces sold-out and option selection rules
+- Stores order-time price snapshots
+- Persists orders using Prisma transactions
 
 ---
 
-## Frontend Architecture
+## Architecture
 
-The customer frontend separates UI, shared state, and backend communication.
+The application separates the Next.js frontend from the Express backend through a dedicated API layer.
 
-```text
-Customer Screens
-      ↓
-React Context
-(Order Session / Cart)
-      ↓
-Frontend API Layer
-      ↓
-Backend REST API
-```
+- **Frontend:** Next.js, React, TypeScript, Context API
+- **Backend:** Node.js, Express, TypeScript
+- **Database:** PostgreSQL with Prisma ORM
+- **API:** REST-based communication between client and server
 
-### Order Session
-
-`OrderSessionContext` maintains the currently validated restaurant and table throughout the ordering flow.
-
-When a customer enters a different restaurant or table session, the previous cart is cleared to prevent order data from being shared between table sessions.
-
-### Cart
-
-`CartContext` manages:
-
-- Cart items
-- Selected options
-- Quantities
-- Client-side subtotals
-- Client-side total price
-- Cart item merging and removal
-
-These calculations provide immediate UI feedback while the backend remains responsible for authoritative order pricing.
-
----
-
-## Backend Architecture
-
-The backend follows a lightweight Route → Service → Database structure.
-
-```text
-Express Route
-     ↓
-Service Layer
-     ↓
-Prisma
-     ↓
-PostgreSQL
-```
-
-Routes handle HTTP requests, basic request validation, and responses.
-
-Services contain database access, business validation, relationship validation, pricing logic, and order persistence.
-
-The architecture intentionally remains lightweight for the current project size while keeping business logic separated from HTTP handling.
-
----
-
-## Database
-
-The core database includes models for:
-
-- Restaurants
-- Restaurant Tables
-- Categories
-- Menu Items
-- Option Groups
-- Option Items
-- Customer Orders
-- Customer Order Items
-
-Order records preserve snapshot data such as menu names, base prices, selected options, unit prices, and line totals so historical orders remain accurate even if menu data changes later.
+Backend services handle business validation, database access, pricing, and order persistence, while the frontend focuses on the customer and admin interfaces.
 
 ---
 
