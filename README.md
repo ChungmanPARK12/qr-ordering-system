@@ -1,5 +1,7 @@
 # QR Ordering System
 
+![QR Ordering System](https://github.com/user-attachments/assets/39a7ecf8-5e3e-4ff4-9dc6-95607d2f46dd)
+
 A full-stack QR-based restaurant ordering system built with **Next.js, TypeScript, Node.js, Express, PostgreSQL, and Prisma**.
 
 The project simulates a real restaurant ordering workflow where customers scan a table QR code, browse the restaurant menu, configure menu options, manage their cart, and submit an order that is **validated and persisted by the backend**.
