@@ -1,6 +1,6 @@
 # QR Ordering System
 
-![QR Ordering System](https://github.com/user-attachments/assets/39a7ecf8-5e3e-4ff4-9dc6-95607d2f46dd)
+<img width="1024" height="700" alt="QR Ordering System" src="https://github.com/user-attachments/assets/39a7ecf8-5e3e-4ff4-9dc6-95607d2f46dd" />
 
 A full-stack QR-based restaurant ordering system built with **Next.js, TypeScript, Node.js, Express, PostgreSQL, and Prisma**.
 
