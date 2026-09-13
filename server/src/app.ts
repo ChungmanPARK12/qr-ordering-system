@@ -7,6 +7,7 @@ import restaurantRoutes from "./routes/restaurant.routes";
 import qrRoutes from "./routes/qr.routes";
 import menuRoutes from "./routes/menu.routes";
 import orderRoutes from "./routes/order.routes";
+import categoryRoutes from "./routes/category.routes";
 
 const app = express();
 
@@ -25,5 +26,6 @@ app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/qr", qrRoutes);
 app.use("/api/restaurants", menuRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/restaurants", categoryRoutes);
 
 export default app;
