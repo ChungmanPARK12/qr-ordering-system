@@ -23,7 +23,7 @@ const CategoryManagement = () => {
     const newCategory: Category = {
       id: `category-${Date.now()}`,
       name: name.trim(),
-      description: description.trim() || undefined,
+      description: description.trim() || null,
       sortOrder: categories.length + 1,
       isVisible: true,
       restaurantId: "restaurant-1",
@@ -50,7 +50,7 @@ const CategoryManagement = () => {
           ? {
               ...category,
               name: editName.trim(),
-              description: editDescription.trim() || undefined,
+              description: editDescription.trim() || null,
             }
           : category,
       ),
