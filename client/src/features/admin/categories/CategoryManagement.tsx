@@ -1,14 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Button from "@/components/ui/Button/Button";
 import Input from "@/components/ui/Input/Input";
-import { mockCategories } from "@/data/mockMenuData";
+import {
+  createAdminCategory,
+  deleteAdminCategory,
+  getAdminCategories,
+  updateAdminCategory,
+} from "@/lib/api/adminApi";
 import type { Category } from "@/types/menu.types";
 
+const RESTAURANT_ID = "restaurant-1";
+
 const CategoryManagement = () => {
-  const [categories, setCategories] = useState<Category[]>(mockCategories);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -17,22 +24,64 @@ const CategoryManagement = () => {
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
 
-  const handleAddCategory = () => {
-    if (!name.trim()) return;
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    const newCategory: Category = {
-      id: `category-${Date.now()}`,
-      name: name.trim(),
-      description: description.trim() || null,
-      sortOrder: categories.length + 1,
-      isVisible: true,
-      restaurantId: "restaurant-1",
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadCategories = async () => {
+      try {
+        setIsLoading(true);
+        setErrorMessage(null);
+
+        const data = await getAdminCategories(RESTAURANT_ID);
+
+        if (cancelled) return;
+
+        setCategories(data);
+      } catch (error) {
+        if (cancelled) return;
+
+        setErrorMessage(
+          error instanceof Error ? error.message : "Failed to load categories.",
+        );
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
     };
 
-    setCategories((prev) => [...prev, newCategory]);
+    loadCategories();
 
-    setName("");
-    setDescription("");
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleAddCategory = async () => {
+    if (!name.trim()) return;
+
+    try {
+      setErrorMessage(null);
+
+      const createdCategory = await createAdminCategory(RESTAURANT_ID, {
+        name: name.trim(),
+        description: description.trim() || null,
+        sortOrder: categories.length + 1,
+        isVisible: true,
+      });
+
+      setCategories((prev) => [...prev, createdCategory]);
+
+      setName("");
+      setDescription("");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to create category.",
+      );
+    }
   };
 
   const handleStartEdit = (category: Category) => {
@@ -41,24 +90,31 @@ const CategoryManagement = () => {
     setEditDescription(category.description ?? "");
   };
 
-  const handleSaveEdit = (id: string) => {
+  const handleSaveEdit = async (id: string) => {
     if (!editName.trim()) return;
 
-    setCategories((prev) =>
-      prev.map((category) =>
-        category.id === id
-          ? {
-              ...category,
-              name: editName.trim(),
-              description: editDescription.trim() || null,
-            }
-          : category,
-      ),
-    );
+    try {
+      setErrorMessage(null);
 
-    setEditingId(null);
-    setEditName("");
-    setEditDescription("");
+      const updatedCategory = await updateAdminCategory(RESTAURANT_ID, id, {
+        name: editName.trim(),
+        description: editDescription.trim() || null,
+      });
+
+      setCategories((prev) =>
+        prev.map((category) =>
+          category.id === id ? updatedCategory : category,
+        ),
+      );
+
+      setEditingId(null);
+      setEditName("");
+      setEditDescription("");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to update category.",
+      );
+    }
   };
 
   const handleCancelEdit = () => {
@@ -67,23 +123,62 @@ const CategoryManagement = () => {
     setEditDescription("");
   };
 
-  const handleDeleteCategory = (id: string) => {
-    setCategories((prev) => prev.filter((category) => category.id !== id));
+  const handleDeleteCategory = async (id: string) => {
+    const confirmed = window.confirm(
+      "Deleting this category will permanently delete all menu items in this category. Past order records will remain.",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setErrorMessage(null);
+
+      await deleteAdminCategory(RESTAURANT_ID, id);
+
+      setCategories((prev) => prev.filter((category) => category.id !== id));
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to delete category.",
+      );
+    }
   };
 
-  const handleToggleVisibility = (id: string) => {
-    setCategories((prev) =>
-      prev.map((category) =>
-        category.id === id
-          ? { ...category, isVisible: !category.isVisible }
-          : category,
-      ),
-    );
+  const handleToggleVisibility = async (category: Category) => {
+    try {
+      setErrorMessage(null);
+
+      const updatedCategory = await updateAdminCategory(
+        RESTAURANT_ID,
+        category.id,
+        {
+          isVisible: !category.isVisible,
+        },
+      );
+
+      setCategories((prev) =>
+        prev.map((item) => (item.id === category.id ? updatedCategory : item)),
+      );
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to update visibility.",
+      );
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div>
+        <h1>Category Management</h1>
+        <p>Loading categories...</p>
+      </div>
+    );
+  }
 
   return (
     <div>
       <h1>Category Management</h1>
+
+      {errorMessage && <p>{errorMessage}</p>}
 
       <div>
         <h2>Add Category</h2>
@@ -160,7 +255,7 @@ const CategoryManagement = () => {
 
               <Button
                 variant="secondary"
-                onClick={() => handleToggleVisibility(category.id)}
+                onClick={() => handleToggleVisibility(category)}
               >
                 {category.isVisible ? "Hide" : "Show"}
               </Button>
