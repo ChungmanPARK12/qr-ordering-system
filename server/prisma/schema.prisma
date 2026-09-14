@@ -250,8 +250,8 @@ model CustomerOrderItem {
   customerOrderId String
   customerOrder   CustomerOrder @relation(fields: [customerOrderId], references: [id], onDelete: Cascade)
 
-  menuItemId String
-  menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: SetNull)
+  menuItemId String?
+  menuItem   MenuItem? @relation(fields: [menuItemId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt

@@ -26,6 +26,6 @@ app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/qr", qrRoutes);
 app.use("/api/restaurants", menuRoutes);
 app.use("/api/orders", orderRoutes);
-app.use("/api/restaurants", categoryRoutes);
+app.use("/api/admin/restaurants", categoryRoutes);
 
 export default app;
