@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { validateQrEntry } from "../services/restaurant.service";
+import { validateQrEntry } from "../../services/customer/restaurant.service";
 
 const router = Router();
 

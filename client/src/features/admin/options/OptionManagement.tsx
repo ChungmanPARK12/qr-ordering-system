@@ -26,12 +26,24 @@ const OptionManagement = () => {
   const [optionItems, setOptionItems] = useState<OptionItem[]>(mockOptionItems);
 
   // -----------------------------
+  // Temporary Menu assignment state
+  // Day 3: replace with backend relation
+  // -----------------------------
+  const [menuAssignments, setMenuAssignments] = useState<
+    Record<string, string[]>
+  >({
+    "option-group-1": ["menu-1", "menu-2", "menu-4"],
+    "option-group-2": ["menu-1", "menu-2"],
+    "option-group-3": ["menu-4"],
+  });
+
+  // -----------------------------
   // Add Option Group state
   // -----------------------------
   const [name, setName] = useState("");
 
   const [selectionType, setSelectionType] =
-    useState<OptionSelectionType>("single");
+    useState<OptionSelectionType>("SINGLE");
 
   const [isRequired, setIsRequired] = useState(false);
 
@@ -47,7 +59,7 @@ const OptionManagement = () => {
   const [editName, setEditName] = useState("");
 
   const [editSelectionType, setEditSelectionType] =
-    useState<OptionSelectionType>("single");
+    useState<OptionSelectionType>("SINGLE");
 
   const [editIsRequired, setEditIsRequired] = useState(false);
 
@@ -80,13 +92,14 @@ const OptionManagement = () => {
     if (maxSelection < 1) return;
     if (minSelection > maxSelection) return;
 
-    // Single selection group can only allow one selection
-    if (selectionType === "single" && maxSelection !== 1) {
+    if (selectionType === "SINGLE" && maxSelection !== 1) {
       return;
     }
 
+    const id = `option-group-${Date.now()}`;
+
     const newOptionGroup: OptionGroup = {
-      id: `option-group-${Date.now()}`,
+      id,
       name: name.trim(),
       selectionType,
       isRequired,
@@ -94,16 +107,18 @@ const OptionManagement = () => {
       maxSelection,
       sortOrder: optionGroups.length + 1,
       restaurantId: "restaurant-1",
-
-      // No menu is assigned when the group is first created
-      menuItemIds: [],
+      optionItems: [],
     };
 
     setOptionGroups((prev) => [...prev, newOptionGroup]);
 
-    // Reset form
+    setMenuAssignments((prev) => ({
+      ...prev,
+      [id]: [],
+    }));
+
     setName("");
-    setSelectionType("single");
+    setSelectionType("SINGLE");
     setIsRequired(false);
     setMinSelection(0);
     setMaxSelection(1);
@@ -130,7 +145,7 @@ const OptionManagement = () => {
     if (editMaxSelection < 1) return;
     if (editMinSelection > editMaxSelection) return;
 
-    if (editSelectionType === "single" && editMaxSelection !== 1) {
+    if (editSelectionType === "SINGLE" && editMaxSelection !== 1) {
       return;
     }
 
@@ -149,10 +164,9 @@ const OptionManagement = () => {
       ),
     );
 
-    // Reset edit state
     setEditingId(null);
     setEditName("");
-    setEditSelectionType("single");
+    setEditSelectionType("SINGLE");
     setEditIsRequired(false);
     setEditMinSelection(0);
     setEditMaxSelection(1);
@@ -164,7 +178,7 @@ const OptionManagement = () => {
   const handleCancelEdit = () => {
     setEditingId(null);
     setEditName("");
-    setEditSelectionType("single");
+    setEditSelectionType("SINGLE");
     setEditIsRequired(false);
     setEditMinSelection(0);
     setEditMaxSelection(1);
@@ -174,11 +188,15 @@ const OptionManagement = () => {
   // Delete Option Group
   // -----------------------------
   const handleDeleteOptionGroup = (id: string) => {
-    // Remove Option Group
     setOptionGroups((prev) => prev.filter((group) => group.id !== id));
 
-    // Remove all Option Items belonging to the group
     setOptionItems((prev) => prev.filter((item) => item.optionGroupId !== id));
+
+    setMenuAssignments((prev) => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
   };
 
   // -----------------------------
@@ -187,14 +205,12 @@ const OptionManagement = () => {
   const handleAddOptionItem = (optionGroupId: string) => {
     if (!newItemName.trim()) return;
 
-    // Convert displayed dollar amount to cents
     const additionalPriceInCents = Math.round(Number(newItemPrice) * 100);
 
     if (Number.isNaN(additionalPriceInCents) || additionalPriceInCents < 0) {
       return;
     }
 
-    // Count existing items in the selected group
     const groupItemCount = optionItems.filter(
       (item) => item.optionGroupId === optionGroupId,
     ).length;
@@ -209,7 +225,6 @@ const OptionManagement = () => {
 
     setOptionItems((prev) => [...prev, newOptionItem]);
 
-    // Reset Option Item form
     setNewItemName("");
     setNewItemPrice("");
   };
@@ -220,8 +235,6 @@ const OptionManagement = () => {
   const handleStartItemEdit = (item: OptionItem) => {
     setEditingItemId(item.id);
     setEditItemName(item.name);
-
-    // Convert cents back to dollar display value
     setEditItemPrice((item.additionalPrice / 100).toFixed(2));
   };
 
@@ -249,7 +262,6 @@ const OptionManagement = () => {
       ),
     );
 
-    // Reset Option Item edit state
     setEditingItemId(null);
     setEditItemName("");
     setEditItemPrice("");
@@ -278,34 +290,25 @@ const OptionManagement = () => {
     optionGroupId: string,
     menuItemId: string,
   ) => {
-    setOptionGroups((prev) =>
-      prev.map((group) => {
-        if (group.id !== optionGroupId) {
-          return group;
-        }
+    setMenuAssignments((prev) => {
+      const assignedMenuIds = prev[optionGroupId] ?? [];
 
-        const isAssigned = group.menuItemIds.includes(menuItemId);
+      const isAssigned = assignedMenuIds.includes(menuItemId);
 
-        return {
-          ...group,
-
-          // Remove the menu if already assigned,
-          // otherwise add it to the group.
-          menuItemIds: isAssigned
-            ? group.menuItemIds.filter((id) => id !== menuItemId)
-            : [...group.menuItemIds, menuItemId],
-        };
-      }),
-    );
+      return {
+        ...prev,
+        [optionGroupId]: isAssigned
+          ? assignedMenuIds.filter((id) => id !== menuItemId)
+          : [...assignedMenuIds, menuItemId],
+      };
+    });
   };
 
   return (
     <div>
       <h1>Option Management</h1>
 
-      {/* -----------------------------
-          Add Option Group
-      ------------------------------ */}
+      {/* Add Option Group */}
       <div>
         <h2>Add Option Group</h2>
 
@@ -323,8 +326,7 @@ const OptionManagement = () => {
 
             setSelectionType(type);
 
-            // Single selection always has maxSelection = 1
-            if (type === "single") {
+            if (type === "SINGLE") {
               setMaxSelection(1);
 
               if (minSelection > 1) {
@@ -333,9 +335,8 @@ const OptionManagement = () => {
             }
           }}
         >
-          <option value="single">Single</option>
-
-          <option value="multiple">Multiple</option>
+          <option value="SINGLE">Single</option>
+          <option value="MULTIPLE">Multiple</option>
         </select>
 
         <label>
@@ -347,12 +348,10 @@ const OptionManagement = () => {
 
               setIsRequired(required);
 
-              // Required group must have at least one selection
               if (required && minSelection === 0) {
                 setMinSelection(1);
               }
 
-              // Optional group allows zero selection
               if (!required) {
                 setMinSelection(0);
               }
@@ -364,7 +363,7 @@ const OptionManagement = () => {
         <input
           type="number"
           min="0"
-          max={selectionType === "single" ? 1 : undefined}
+          max={selectionType === "SINGLE" ? 1 : undefined}
           value={minSelection}
           onChange={(event) => setMinSelection(Number(event.target.value))}
           placeholder="Min selection"
@@ -373,11 +372,11 @@ const OptionManagement = () => {
         <input
           type="number"
           min="1"
-          max={selectionType === "single" ? 1 : undefined}
+          max={selectionType === "SINGLE" ? 1 : undefined}
           value={maxSelection}
           onChange={(event) => setMaxSelection(Number(event.target.value))}
           placeholder="Max selection"
-          disabled={selectionType === "single"}
+          disabled={selectionType === "SINGLE"}
         />
 
         <button onClick={handleAddOptionGroup}>Add Option Group</button>
@@ -385,23 +384,18 @@ const OptionManagement = () => {
 
       <hr />
 
-      {/* -----------------------------
-          Option Group list
-      ------------------------------ */}
+      {/* Option Group list */}
       {optionGroups.map((group) => {
-        // Find Option Items belonging to this group
         const groupItems = optionItems.filter(
           (item) => item.optionGroupId === group.id,
         );
+
+        const assignedMenuIds = menuAssignments[group.id] ?? [];
 
         return (
           <div key={group.id}>
             {editingId === group.id ? (
               <>
-                {/* -----------------------------
-                    Edit Option Group
-                ------------------------------ */}
-
                 <input
                   type="text"
                   value={editName}
@@ -415,7 +409,7 @@ const OptionManagement = () => {
 
                     setEditSelectionType(type);
 
-                    if (type === "single") {
+                    if (type === "SINGLE") {
                       setEditMaxSelection(1);
 
                       if (editMinSelection > 1) {
@@ -424,9 +418,8 @@ const OptionManagement = () => {
                     }
                   }}
                 >
-                  <option value="single">Single</option>
-
-                  <option value="multiple">Multiple</option>
+                  <option value="SINGLE">Single</option>
+                  <option value="MULTIPLE">Multiple</option>
                 </select>
 
                 <label>
@@ -453,7 +446,7 @@ const OptionManagement = () => {
                 <input
                   type="number"
                   min="0"
-                  max={editSelectionType === "single" ? 1 : undefined}
+                  max={editSelectionType === "SINGLE" ? 1 : undefined}
                   value={editMinSelection}
                   onChange={(event) =>
                     setEditMinSelection(Number(event.target.value))
@@ -463,12 +456,12 @@ const OptionManagement = () => {
                 <input
                   type="number"
                   min="1"
-                  max={editSelectionType === "single" ? 1 : undefined}
+                  max={editSelectionType === "SINGLE" ? 1 : undefined}
                   value={editMaxSelection}
                   onChange={(event) =>
                     setEditMaxSelection(Number(event.target.value))
                   }
-                  disabled={editSelectionType === "single"}
+                  disabled={editSelectionType === "SINGLE"}
                 />
 
                 <button onClick={() => handleSaveEdit(group.id)}>Save</button>
@@ -477,10 +470,6 @@ const OptionManagement = () => {
               </>
             ) : (
               <>
-                {/* -----------------------------
-                    Option Group information
-                ------------------------------ */}
-
                 <h2>{group.name}</h2>
 
                 <p>Selection Type: {group.selectionType}</p>
@@ -497,10 +486,6 @@ const OptionManagement = () => {
                   Delete
                 </button>
 
-                {/* -----------------------------
-                    Assigned Menu Items
-                ------------------------------ */}
-
                 <h3>Assigned Menus</h3>
 
                 {mockMenuItems.map((menuItem) => (
@@ -512,7 +497,7 @@ const OptionManagement = () => {
                   >
                     <input
                       type="checkbox"
-                      checked={group.menuItemIds.includes(menuItem.id)}
+                      checked={assignedMenuIds.includes(menuItem.id)}
                       onChange={() =>
                         handleToggleMenuAssignment(group.id, menuItem.id)
                       }
@@ -523,10 +508,6 @@ const OptionManagement = () => {
                 ))}
 
                 <h3>Options</h3>
-
-                {/* -----------------------------
-                    Add Option Item
-                ------------------------------ */}
 
                 <div>
                   <input
@@ -550,17 +531,11 @@ const OptionManagement = () => {
                   </button>
                 </div>
 
-                {/* -----------------------------
-                    Option Item list
-                ------------------------------ */}
-
                 {groupItems.length > 0 ? (
                   groupItems.map((item) => (
                     <div key={item.id}>
                       {editingItemId === item.id ? (
                         <>
-                          {/* Edit Option Item */}
-
                           <input
                             type="text"
                             value={editItemName}

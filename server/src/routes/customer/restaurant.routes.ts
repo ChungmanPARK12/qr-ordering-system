@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   getRestaurantById,
   getTableById,
-} from "../services/restaurant.service";
+} from "../../services/customer/restaurant.service";
 
 const router = Router();
 

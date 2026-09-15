@@ -18,3 +18,22 @@
 - Future Improvement: Improve `sortOrder` management
 - Future Improvement: Add Admin authentication and restaurant ownership validation
 - No production blockers found
+
+## 2026/09/15 — Admin Menu Item CRUD Integration
+
+### Menu Item CRUD
+
+- Connected Admin Menu Item CRUD to backend APIs and PostgreSQL
+- Replaced mock menu data with real API data
+- Verified create, update, category move, visibility, sold-out, delete, and DB persistence
+- Added restaurant/category scoped validation and duplicate name handling
+- Moved MenuItem `sortOrder` creation policy to the backend
+- Automatically assigns `max(sortOrder) + 1` on create and category move
+
+### Review Notes
+
+- MenuItem service and routes reviewed as Production Ready
+- Future Improvement: Handle Prisma unique constraint race conditions
+- Future Improvement: Improve reorder and sortOrder gap management
+- Future Improvement: Add stronger image URL validation
+- No production blockers found

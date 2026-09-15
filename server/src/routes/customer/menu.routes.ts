@@ -3,7 +3,7 @@ import {
   getCategoriesByRestaurant,
   getMenuByRestaurant,
   getMenuItemDetail,
-} from "../services/menu.service";
+} from "../../services/customer/menu.service";
 
 const router = Router();
 

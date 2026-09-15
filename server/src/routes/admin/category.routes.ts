@@ -6,7 +6,7 @@ import {
   getCategoriesByRestaurant,
   updateCategory,
   deleteCategory,
-} from "../services/category.service";
+} from "../../services/admin/category.service";
 
 const router = Router();
 
