@@ -8,7 +8,7 @@ Replace admin-side mock CRUD operations with real APIs while preserving the exis
 
 ---
 
-## Day 1 — Admin Architecture Review & Category CRUD
+## Day 1 — Admin Architecture Review & Category CRUD(Completed)
 
 ### Goal
 
@@ -37,35 +37,46 @@ Establish the admin backend integration pattern and connect category management 
 
 ---
 
-## Day 2 — Menu Item CRUD Integration
+## Day 2 — Menu Item CRUD Integration(Completed)
 
 ### Goal
 
-Connect menu item management to backend APIs and PostgreSQL.
+Connect Admin Menu Item management to backend APIs and PostgreSQL.
 
 ### Tasks
 
-- Add Menu Item CRUD routes
-- Add Menu Item service logic
+- Review current `MenuManagement` and mock dependencies
+- Add Admin Menu Item CRUD routes and service
+- Reuse `/api/admin/restaurants/...` namespace
 - Validate restaurant and category relationships
-- Support menu item fields:
+- Support:
   - name
   - description
   - price
-  - image URL
-  - visibility
-  - sold-out status
-  - sorting/order fields if currently supported
-- Connect `MenuManagement` to backend APIs
-- Replace mock menu mutations
-- Verify category/menu relationships
-- Test create, update, and delete flows
+  - imageUrl
+  - isVisible
+  - isSoldOut
+  - sortOrder
+  - categoryId
+- Handle duplicate menu names within a category
+- Connect `MenuManagement` to `adminApi.ts`
+- Replace mock MenuItem CRUD
+- Add loading and error handling
+- Verify create, update, delete, visibility, and sold-out persistence
+- Verify Category → MenuItem relationship in PostgreSQL
 
-### Expected Output
+### Delete Policy
 
-- Menu items managed through PostgreSQL
-- Admin Menu Management uses real backend data
-- Visibility and sold-out state persist correctly
+- MenuItem can be hard deleted
+- Existing CustomerOrderItem history remains
+- `menuItemId` becomes NULL through `onDelete: SetNull`
+- Order snapshots remain unchanged
+
+### Future Improvement
+
+- Admin authentication / restaurant ownership
+- Stronger sortOrder management
+- Image upload/storage if needed
 
 ---
 

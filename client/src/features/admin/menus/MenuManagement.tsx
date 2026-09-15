@@ -1,56 +1,112 @@
 "use client";
 
-import { useState } from "react";
-import { mockCategories, mockMenuItems } from "@/data/mockMenuData";
-import type { MenuItem } from "@/types/menu.types";
+import { useEffect, useState } from "react";
+
+import {
+  createAdminMenuItem,
+  deleteAdminMenuItem,
+  getAdminCategories,
+  getAdminMenuItems,
+  updateAdminMenuItem,
+} from "@/lib/api/adminApi";
+import type { Category, MenuItem } from "@/types/menu.types";
+
+const RESTAURANT_ID = "restaurant-1";
 
 const MenuManagement = () => {
-  const [menuItems, setMenuItems] = useState<MenuItem[]>(mockMenuItems);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   // Add Menu state
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [categoryId, setCategoryId] = useState(mockCategories[0]?.id ?? "");
+  const [imageUrl, setImageUrl] = useState("");
+  const [categoryId, setCategoryId] = useState("");
 
   // Edit Menu state
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editPrice, setEditPrice] = useState("");
+  const [editImageUrl, setEditImageUrl] = useState("");
   const [editCategoryId, setEditCategoryId] = useState("");
 
-  const handleAddMenu = () => {
-    if (!name.trim()) return;
-    if (!categoryId) return;
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        setErrorMessage(null);
+
+        const [menuData, categoryData] = await Promise.all([
+          getAdminMenuItems(RESTAURANT_ID),
+          getAdminCategories(RESTAURANT_ID),
+        ]);
+
+        if (cancelled) return;
+
+        setMenuItems(menuData);
+        setCategories(categoryData);
+
+        if (categoryData.length > 0) {
+          setCategoryId(categoryData[0].id);
+        }
+      } catch (error) {
+        if (cancelled) return;
+
+        setErrorMessage(
+          error instanceof Error ? error.message : "Failed to load menu data.",
+        );
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleAddMenu = async () => {
+    if (!name.trim() || !categoryId) return;
 
     const priceInCents = Math.round(Number(price) * 100);
 
     if (Number.isNaN(priceInCents) || priceInCents < 0) return;
 
-    const categoryMenuCount = menuItems.filter(
-      (item) => item.categoryId === categoryId,
-    ).length;
+    try {
+      setErrorMessage(null);
 
-    const newMenuItem: MenuItem = {
-      id: `menu-${Date.now()}`,
-      name: name.trim(),
-      description: description.trim() || undefined,
-      price: priceInCents,
-      imageUrl: undefined,
-      sortOrder: categoryMenuCount + 1,
-      isVisible: true,
-      isSoldOut: false,
-      restaurantId: "restaurant-1",
-      categoryId,
-    };
+      const createdMenuItem = await createAdminMenuItem(RESTAURANT_ID, {
+        name: name.trim(),
+        description: description.trim() || null,
+        price: priceInCents,
+        imageUrl: imageUrl.trim() || null,
+        isVisible: true,
+        isSoldOut: false,
+        categoryId,
+      });
 
-    setMenuItems((prev) => [...prev, newMenuItem]);
+      setMenuItems((prev) => [...prev, createdMenuItem]);
 
-    setName("");
-    setDescription("");
-    setPrice("");
-    setCategoryId(mockCategories[0]?.id ?? "");
+      setName("");
+      setDescription("");
+      setPrice("");
+      setImageUrl("");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to create menu item.",
+      );
+    }
   };
 
   const handleStartEdit = (menuItem: MenuItem) => {
@@ -58,36 +114,45 @@ const MenuManagement = () => {
     setEditName(menuItem.name);
     setEditDescription(menuItem.description ?? "");
     setEditPrice((menuItem.price / 100).toFixed(2));
+    setEditImageUrl(menuItem.imageUrl ?? "");
     setEditCategoryId(menuItem.categoryId);
   };
 
-  const handleSaveEdit = (id: string) => {
-    if (!editName.trim()) return;
-    if (!editCategoryId) return;
+  const handleSaveEdit = async (id: string) => {
+    if (!editName.trim() || !editCategoryId) return;
 
     const priceInCents = Math.round(Number(editPrice) * 100);
 
     if (Number.isNaN(priceInCents) || priceInCents < 0) return;
 
-    setMenuItems((prev) =>
-      prev.map((menuItem) =>
-        menuItem.id === id
-          ? {
-              ...menuItem,
-              name: editName.trim(),
-              description: editDescription.trim() || undefined,
-              price: priceInCents,
-              categoryId: editCategoryId,
-            }
-          : menuItem,
-      ),
-    );
+    try {
+      setErrorMessage(null);
 
-    setEditingId(null);
-    setEditName("");
-    setEditDescription("");
-    setEditPrice("");
-    setEditCategoryId("");
+      const updatedMenuItem = await updateAdminMenuItem(RESTAURANT_ID, id, {
+        name: editName.trim(),
+        description: editDescription.trim() || null,
+        price: priceInCents,
+        imageUrl: editImageUrl.trim() || null,
+        categoryId: editCategoryId,
+      });
+
+      setMenuItems((prev) =>
+        prev.map((menuItem) =>
+          menuItem.id === id ? updatedMenuItem : menuItem,
+        ),
+      );
+
+      setEditingId(null);
+      setEditName("");
+      setEditDescription("");
+      setEditPrice("");
+      setEditImageUrl("");
+      setEditCategoryId("");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to update menu item.",
+      );
+    }
   };
 
   const handleCancelEdit = () => {
@@ -95,36 +160,90 @@ const MenuManagement = () => {
     setEditName("");
     setEditDescription("");
     setEditPrice("");
+    setEditImageUrl("");
     setEditCategoryId("");
   };
 
-  const handleDeleteMenu = (id: string) => {
-    setMenuItems((prev) => prev.filter((menuItem) => menuItem.id !== id));
+  const handleDeleteMenu = async (id: string) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to permanently delete this menu item? Past order records will remain.",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setErrorMessage(null);
+
+      await deleteAdminMenuItem(RESTAURANT_ID, id);
+
+      setMenuItems((prev) => prev.filter((menuItem) => menuItem.id !== id));
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to delete menu item.",
+      );
+    }
   };
 
-  const handleToggleVisibility = (id: string) => {
-    setMenuItems((prev) =>
-      prev.map((menuItem) =>
-        menuItem.id === id
-          ? { ...menuItem, isVisible: !menuItem.isVisible }
-          : menuItem,
-      ),
-    );
+  const handleToggleVisibility = async (menuItem: MenuItem) => {
+    try {
+      setErrorMessage(null);
+
+      const updatedMenuItem = await updateAdminMenuItem(
+        RESTAURANT_ID,
+        menuItem.id,
+        {
+          isVisible: !menuItem.isVisible,
+        },
+      );
+
+      setMenuItems((prev) =>
+        prev.map((item) => (item.id === menuItem.id ? updatedMenuItem : item)),
+      );
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to update visibility.",
+      );
+    }
   };
 
-  const handleToggleSoldOut = (id: string) => {
-    setMenuItems((prev) =>
-      prev.map((menuItem) =>
-        menuItem.id === id
-          ? { ...menuItem, isSoldOut: !menuItem.isSoldOut }
-          : menuItem,
-      ),
-    );
+  const handleToggleSoldOut = async (menuItem: MenuItem) => {
+    try {
+      setErrorMessage(null);
+
+      const updatedMenuItem = await updateAdminMenuItem(
+        RESTAURANT_ID,
+        menuItem.id,
+        {
+          isSoldOut: !menuItem.isSoldOut,
+        },
+      );
+
+      setMenuItems((prev) =>
+        prev.map((item) => (item.id === menuItem.id ? updatedMenuItem : item)),
+      );
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Failed to update sold-out status.",
+      );
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div>
+        <h1>Menu Management</h1>
+        <p>Loading menu items...</p>
+      </div>
+    );
+  }
 
   return (
     <div>
       <h1>Menu Management</h1>
+
+      {errorMessage && <p>{errorMessage}</p>}
 
       <div>
         <h2>Add Menu</h2>
@@ -152,11 +271,18 @@ const MenuManagement = () => {
           onChange={(event) => setPrice(event.target.value)}
         />
 
+        <input
+          type="text"
+          placeholder="Image URL"
+          value={imageUrl}
+          onChange={(event) => setImageUrl(event.target.value)}
+        />
+
         <select
           value={categoryId}
           onChange={(event) => setCategoryId(event.target.value)}
         >
-          {mockCategories.map((category) => (
+          {categories.map((category) => (
             <option key={category.id} value={category.id}>
               {category.name}
             </option>
@@ -192,11 +318,18 @@ const MenuManagement = () => {
                 onChange={(event) => setEditPrice(event.target.value)}
               />
 
+              <input
+                type="text"
+                placeholder="Image URL"
+                value={editImageUrl}
+                onChange={(event) => setEditImageUrl(event.target.value)}
+              />
+
               <select
                 value={editCategoryId}
                 onChange={(event) => setEditCategoryId(event.target.value)}
               >
-                {mockCategories.map((category) => (
+                {categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}
                   </option>
@@ -234,7 +367,6 @@ const MenuManagement = () => {
               </div>
 
               <h2>{menuItem.name}</h2>
-
               <p>{menuItem.description}</p>
               <p>Price: ${(menuItem.price / 100).toFixed(2)}</p>
               <p>Category ID: {menuItem.categoryId}</p>
@@ -243,14 +375,16 @@ const MenuManagement = () => {
               <p>Sold Out: {menuItem.isSoldOut ? "Yes" : "No"}</p>
 
               <button onClick={() => handleStartEdit(menuItem)}>Edit</button>
+
               <button onClick={() => handleDeleteMenu(menuItem.id)}>
                 Delete
               </button>
-              <button onClick={() => handleToggleVisibility(menuItem.id)}>
+
+              <button onClick={() => handleToggleVisibility(menuItem)}>
                 {menuItem.isVisible ? "Hide" : "Show"}
               </button>
 
-              <button onClick={() => handleToggleSoldOut(menuItem.id)}>
+              <button onClick={() => handleToggleSoldOut(menuItem)}>
                 {menuItem.isSoldOut ? "Mark Available" : "Mark Sold Out"}
               </button>
             </>

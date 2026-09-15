@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createCustomerOrder } from "../services/order.service";
+import { createCustomerOrder } from "../../services/customer/order.service";
 
 const router = Router();
 

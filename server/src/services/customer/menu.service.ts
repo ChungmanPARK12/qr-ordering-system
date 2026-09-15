@@ -1,4 +1,4 @@
-import prisma from "../lib/prisma";
+import prisma from "../../lib/prisma";
 
 export const getCategoriesByRestaurant = async (restaurantId: string) => {
   return prisma.category.findMany({
