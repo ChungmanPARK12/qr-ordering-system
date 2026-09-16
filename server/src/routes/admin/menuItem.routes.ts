@@ -4,6 +4,7 @@ import {
   deleteMenuItem,
   getMenuItemsByRestaurant,
   updateMenuItem,
+  setMenuItemOptionGroups,
 } from "../../services/admin/menuItem.service";
 
 const router = Router();
@@ -338,5 +339,68 @@ router.delete("/:restaurantId/menu-items/:menuItemId", async (req, res) => {
     });
   }
 });
+
+router.put(
+  "/:restaurantId/menu-items/:menuItemId/option-groups",
+  async (req, res) => {
+    try {
+      const { restaurantId, menuItemId } = req.params;
+      const { optionGroupIds } = req.body;
+
+      // 1. Request shape validation
+      if (
+        !Array.isArray(optionGroupIds) ||
+        !optionGroupIds.every(
+          (id) => typeof id === "string" && id.trim().length > 0,
+        )
+      ) {
+        return res.status(400).json({
+          success: false,
+          code: "INVALID_OPTION_GROUP_IDS",
+          message: "Option group IDs must be an array of non-empty strings.",
+        });
+      }
+
+      // 2. Update relationships
+      const menuItem = await setMenuItemOptionGroups(
+        restaurantId,
+        menuItemId,
+        optionGroupIds,
+      );
+
+      return res.status(200).json({
+        success: true,
+        data: menuItem,
+      });
+    } catch (error) {
+      console.error(error);
+
+      if (error instanceof Error) {
+        if (error.message === "MENU_ITEM_NOT_FOUND") {
+          return res.status(404).json({
+            success: false,
+            code: "MENU_ITEM_NOT_FOUND",
+            message: "Menu item not found.",
+          });
+        }
+
+        if (error.message === "INVALID_OPTION_GROUPS") {
+          return res.status(400).json({
+            success: false,
+            code: "INVALID_OPTION_GROUPS",
+            message:
+              "One or more option groups are invalid for this restaurant.",
+          });
+        }
+      }
+
+      return res.status(500).json({
+        success: false,
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Something went wrong.",
+      });
+    }
+  },
+);
 
 export default router;
