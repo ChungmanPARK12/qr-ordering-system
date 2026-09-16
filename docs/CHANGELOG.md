@@ -37,3 +37,13 @@
 - Future Improvement: Improve reorder and sortOrder gap management
 - Future Improvement: Add stronger image URL validation
 - No production blockers found
+
+## Day 3 — Option Group & Option Item CRUD
+
+- Added Option Group CRUD APIs
+- Added Option Item CRUD APIs
+- Added option selection and pricing validation
+- Added restaurant / option ownership validation
+- Added MenuItem–OptionGroup relationship update support
+- Tested CRUD endpoints and error responses with Postman
+- Still working on integrated in frontend

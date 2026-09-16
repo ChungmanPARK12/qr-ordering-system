@@ -232,3 +232,60 @@ export const deleteMenuItem = async (
     },
   });
 };
+
+export const setMenuItemOptionGroups = async (
+  restaurantId: string,
+  menuItemId: string,
+  optionGroupIds: string[],
+) => {
+  // 1. MenuItem + Restaurant ownership validation
+  const menuItem = await prisma.menuItem.findFirst({
+    where: {
+      id: menuItemId,
+      restaurantId,
+    },
+  });
+
+  if (!menuItem) {
+    throw new Error("MENU_ITEM_NOT_FOUND");
+  }
+
+  // 2. Validate all OptionGroups belong to the same Restaurant
+  const uniqueOptionGroupIds = [...new Set(optionGroupIds)];
+
+  const optionGroups = await prisma.optionGroup.findMany({
+    where: {
+      id: {
+        in: uniqueOptionGroupIds,
+      },
+      restaurantId,
+    },
+  });
+
+  if (optionGroups.length !== uniqueOptionGroupIds.length) {
+    throw new Error("INVALID_OPTION_GROUPS");
+  }
+
+  // 3. Replace the MenuItem's OptionGroup relationships
+  return prisma.menuItem.update({
+    where: {
+      id: menuItemId,
+    },
+    data: {
+      optionGroups: {
+        set: uniqueOptionGroupIds.map((id) => ({ id })),
+      },
+    },
+    include: {
+      optionGroups: {
+        include: {
+          optionItems: {
+            orderBy: {
+              sortOrder: "asc",
+            },
+          },
+        },
+      },
+    },
+  });
+};

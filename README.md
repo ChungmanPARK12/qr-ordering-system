@@ -67,6 +67,26 @@ Backend services handle business validation, database access, pricing, and order
 
 ---
 
+## Development Workflow
+
+The project uses **GitHub Actions CI** to automatically validate the application on every push and pull request.
+
+- Installs client and server dependencies in a clean Ubuntu environment
+- Runs the Next.js production build
+- Generates the Prisma Client
+- Runs the server TypeScript build
+- Requires the CI `build` check to pass before merging into `main`
+- Protects the `main` branch from direct merge without a pull request
+- Uses manual merge approval after successful CI validation
+
+Development workflow:
+
+`Feature Development` → `Local Build` → `Commit` → `Push` → `GitHub Actions CI` → `Pull Request` → `Required CI Check` → `Manual Merge to Main`
+
+> Continuous Deployment (CD) will be added after the production deployment environment is established.
+
+---
+
 ## Current Development
 
 The core database-backed customer ordering flow is complete.

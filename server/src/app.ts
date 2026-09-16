@@ -10,6 +10,8 @@ import orderRoutes from "./routes/customer/order.routes";
 
 import categoryRoutes from "./routes/admin/category.routes";
 import menuItemRoutes from "./routes/admin/menuItem.routes";
+import optionGroupRoutes from "./routes/admin/optionGroup.routes";
+import optionItemRoutes from "./routes/admin/optionItem.routes";
 
 const app = express();
 
@@ -31,5 +33,7 @@ app.use("/api/orders", orderRoutes);
 
 app.use("/api/admin/restaurants", categoryRoutes);
 app.use("/api/admin/restaurants", menuItemRoutes);
+app.use("/api/admin/restaurants", optionGroupRoutes);
+app.use("/api/admin/restaurants", optionItemRoutes);
 
 export default app;
