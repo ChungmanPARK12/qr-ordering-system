@@ -1,11 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import {
-  mockMenuItems,
-  mockOptionGroups,
-  mockOptionItems,
-} from "@/data/mockMenuData";
+import { useEffect, useState } from "react";
+import { getAdminOptionGroups } from "@/lib/api/adminOptionApi";
+import { mockMenuItems } from "@/data/mockMenuData";
 
 import type {
   OptionGroup,
@@ -13,21 +10,54 @@ import type {
   OptionSelectionType,
 } from "@/types/menu.types";
 
+const RESTAURANT_ID = "restaurant-1"; // 실제 DB ID로 교체 필요
+
 const OptionManagement = () => {
   // -----------------------------
   // Option Group list state
   // -----------------------------
-  const [optionGroups, setOptionGroups] =
-    useState<OptionGroup[]>(mockOptionGroups);
+  const [optionGroups, setOptionGroups] = useState<OptionGroup[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // -----------------------------
-  // Option Item list state
-  // -----------------------------
-  const [optionItems, setOptionItems] = useState<OptionItem[]>(mockOptionItems);
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        setErrorMessage(null);
+
+        const data = await getAdminOptionGroups(RESTAURANT_ID);
+
+        if (cancelled) return;
+
+        setOptionGroups(data);
+      } catch (error) {
+        if (cancelled) return;
+
+        setErrorMessage(
+          error instanceof Error
+            ? error.message
+            : "Failed to load option groups.",
+        );
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // -----------------------------
   // Temporary Menu assignment state
-  // Day 3: replace with backend relation
+  // Day 4: Backend integration
   // -----------------------------
   const [menuAssignments, setMenuAssignments] = useState<
     Record<string, string[]>
@@ -46,45 +76,38 @@ const OptionManagement = () => {
     useState<OptionSelectionType>("SINGLE");
 
   const [isRequired, setIsRequired] = useState(false);
-
   const [minSelection, setMinSelection] = useState(0);
-
   const [maxSelection, setMaxSelection] = useState(1);
 
   // -----------------------------
   // Edit Option Group state
   // -----------------------------
   const [editingId, setEditingId] = useState<string | null>(null);
-
   const [editName, setEditName] = useState("");
 
   const [editSelectionType, setEditSelectionType] =
     useState<OptionSelectionType>("SINGLE");
 
   const [editIsRequired, setEditIsRequired] = useState(false);
-
   const [editMinSelection, setEditMinSelection] = useState(0);
-
   const [editMaxSelection, setEditMaxSelection] = useState(1);
 
   // -----------------------------
   // Add Option Item state
   // -----------------------------
   const [newItemName, setNewItemName] = useState("");
-
   const [newItemPrice, setNewItemPrice] = useState("");
 
   // -----------------------------
   // Edit Option Item state
   // -----------------------------
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
-
   const [editItemName, setEditItemName] = useState("");
-
   const [editItemPrice, setEditItemPrice] = useState("");
 
   // -----------------------------
   // Add Option Group
+  // Temporary local-only handler
   // -----------------------------
   const handleAddOptionGroup = () => {
     if (!name.trim()) return;
@@ -106,7 +129,7 @@ const OptionManagement = () => {
       minSelection,
       maxSelection,
       sortOrder: optionGroups.length + 1,
-      restaurantId: "restaurant-1",
+      restaurantId: RESTAURANT_ID,
       optionItems: [],
     };
 
@@ -138,6 +161,7 @@ const OptionManagement = () => {
 
   // -----------------------------
   // Save Option Group edit
+  // Temporary local-only handler
   // -----------------------------
   const handleSaveEdit = (id: string) => {
     if (!editName.trim()) return;
@@ -186,11 +210,10 @@ const OptionManagement = () => {
 
   // -----------------------------
   // Delete Option Group
+  // Temporary local-only handler
   // -----------------------------
   const handleDeleteOptionGroup = (id: string) => {
     setOptionGroups((prev) => prev.filter((group) => group.id !== id));
-
-    setOptionItems((prev) => prev.filter((item) => item.optionGroupId !== id));
 
     setMenuAssignments((prev) => {
       const next = { ...prev };
@@ -201,6 +224,7 @@ const OptionManagement = () => {
 
   // -----------------------------
   // Add Option Item
+  // Temporary local-only handler
   // -----------------------------
   const handleAddOptionItem = (optionGroupId: string) => {
     if (!newItemName.trim()) return;
@@ -211,9 +235,9 @@ const OptionManagement = () => {
       return;
     }
 
-    const groupItemCount = optionItems.filter(
-      (item) => item.optionGroupId === optionGroupId,
-    ).length;
+    const groupItemCount =
+      optionGroups.find((group) => group.id === optionGroupId)?.optionItems
+        .length ?? 0;
 
     const newOptionItem: OptionItem = {
       id: `option-item-${Date.now()}`,
@@ -223,7 +247,16 @@ const OptionManagement = () => {
       optionGroupId,
     };
 
-    setOptionItems((prev) => [...prev, newOptionItem]);
+    setOptionGroups((prev) =>
+      prev.map((group) =>
+        group.id === optionGroupId
+          ? {
+              ...group,
+              optionItems: [...group.optionItems, newOptionItem],
+            }
+          : group,
+      ),
+    );
 
     setNewItemName("");
     setNewItemPrice("");
@@ -240,6 +273,7 @@ const OptionManagement = () => {
 
   // -----------------------------
   // Save Option Item edit
+  // Temporary local-only handler
   // -----------------------------
   const handleSaveItemEdit = (id: string) => {
     if (!editItemName.trim()) return;
@@ -250,16 +284,19 @@ const OptionManagement = () => {
       return;
     }
 
-    setOptionItems((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              name: editItemName.trim(),
-              additionalPrice: additionalPriceInCents,
-            }
-          : item,
-      ),
+    setOptionGroups((prev) =>
+      prev.map((group) => ({
+        ...group,
+        optionItems: group.optionItems.map((item) =>
+          item.id === id
+            ? {
+                ...item,
+                name: editItemName.trim(),
+                additionalPrice: additionalPriceInCents,
+              }
+            : item,
+        ),
+      })),
     );
 
     setEditingItemId(null);
@@ -278,13 +315,20 @@ const OptionManagement = () => {
 
   // -----------------------------
   // Delete Option Item
+  // Temporary local-only handler
   // -----------------------------
   const handleDeleteOptionItem = (id: string) => {
-    setOptionItems((prev) => prev.filter((item) => item.id !== id));
+    setOptionGroups((prev) =>
+      prev.map((group) => ({
+        ...group,
+        optionItems: group.optionItems.filter((item) => item.id !== id),
+      })),
+    );
   };
 
   // -----------------------------
   // Attach / Detach Menu Item
+  // Day 4: Backend integration
   // -----------------------------
   const handleToggleMenuAssignment = (
     optionGroupId: string,
@@ -307,6 +351,10 @@ const OptionManagement = () => {
   return (
     <div>
       <h1>Option Management</h1>
+
+      {isLoading && <p>Loading option groups...</p>}
+
+      {errorMessage && <p role="alert">{errorMessage}</p>}
 
       {/* Add Option Group */}
       <div>
@@ -386,9 +434,7 @@ const OptionManagement = () => {
 
       {/* Option Group list */}
       {optionGroups.map((group) => {
-        const groupItems = optionItems.filter(
-          (item) => item.optionGroupId === group.id,
-        );
+        const groupItems = group.optionItems;
 
         const assignedMenuIds = menuAssignments[group.id] ?? [];
 
@@ -489,12 +535,7 @@ const OptionManagement = () => {
                 <h3>Assigned Menus</h3>
 
                 {mockMenuItems.map((menuItem) => (
-                  <label
-                    key={menuItem.id}
-                    style={{
-                      display: "block",
-                    }}
-                  >
+                  <label key={menuItem.id} style={{ display: "block" }}>
                     <input
                       type="checkbox"
                       checked={assignedMenuIds.includes(menuItem.id)}
@@ -502,7 +543,6 @@ const OptionManagement = () => {
                         handleToggleMenuAssignment(group.id, menuItem.id)
                       }
                     />
-
                     {menuItem.name}
                   </label>
                 ))}
@@ -563,7 +603,7 @@ const OptionManagement = () => {
                       ) : (
                         <>
                           <span>
-                            {item.name} — ${" "}
+                            {item.name} — $
                             {(item.additionalPrice / 100).toFixed(2)}
                           </span>
 
