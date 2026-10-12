@@ -80,7 +80,7 @@ Connect Admin Menu Item management to backend APIs and PostgreSQL.
 
 ---
 
-## Day 3 — Option Group & Option Item CRUD
+## Day 3 — Option Group & Option Item CRUD(Complted)
 
 ### Goal
 

@@ -47,3 +47,23 @@
 - Added MenuItem–OptionGroup relationship update support
 - Tested CRUD endpoints and error responses with Postman
 - Still working on integrated in frontend
+
+## Week 6 – Day 3: Option Management API Integration
+
+### Completed
+
+- Extracted shared API configuration and response handler.
+- Created `adminOptionApi.ts` and connected OptionGroup GET API.
+- Added loading, error handling, and `useEffect` cleanup.
+- Refactored OptionGroup/OptionItem into a single nested State.
+- Updated OptionItem CRUD handlers to use `group.optionItems`.
+- Verified TypeScript compilation (`npx tsc --noEmit`).
+
+### Next Steps
+
+- Replace hardcoded Restaurant ID with dynamic selection.
+- Verify data fetching from PostgreSQL.
+- Connect OptionGroup/OptionItem CRUD APIs.
+- Implement MenuItem–OptionGroup assignments.
+
+**Note:** GET API is connected; CRUD operations still use local State.
