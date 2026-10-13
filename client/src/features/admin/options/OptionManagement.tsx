@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAdminOptionGroups } from "@/lib/api/adminOptionApi";
+
+import {
+  getAdminOptionGroups,
+  createAdminOptionGroup,
+  updateAdminOptionGroup,
+  deleteAdminOptionGroup,
+} from "@/lib/api/adminOptionApi";
+
+import { validateOptionGroupInput } from "./optionGroupValidation";
 import { mockMenuItems } from "@/data/mockMenuData";
 
 import type {
@@ -10,7 +18,7 @@ import type {
   OptionSelectionType,
 } from "@/types/menu.types";
 
-const RESTAURANT_ID = "restaurant-1"; // 실제 DB ID로 교체 필요
+const RESTAURANT_ID = "restaurant-1";
 
 const OptionManagement = () => {
   // -----------------------------
@@ -71,23 +79,23 @@ const OptionManagement = () => {
   // Add Option Group state
   // -----------------------------
   const [name, setName] = useState("");
-
   const [selectionType, setSelectionType] =
     useState<OptionSelectionType>("SINGLE");
-
   const [isRequired, setIsRequired] = useState(false);
   const [minSelection, setMinSelection] = useState(0);
   const [maxSelection, setMaxSelection] = useState(1);
+
+  const [isCreating, setIsCreating] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // -----------------------------
   // Edit Option Group state
   // -----------------------------
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
-
   const [editSelectionType, setEditSelectionType] =
     useState<OptionSelectionType>("SINGLE");
-
   const [editIsRequired, setEditIsRequired] = useState(false);
   const [editMinSelection, setEditMinSelection] = useState(0);
   const [editMaxSelection, setEditMaxSelection] = useState(1);
@@ -107,50 +115,66 @@ const OptionManagement = () => {
 
   // -----------------------------
   // Add Option Group
-  // Temporary local-only handler
+  // Connected to POST API
   // -----------------------------
-  const handleAddOptionGroup = () => {
-    if (!name.trim()) return;
-    if (minSelection < 0) return;
-    if (maxSelection < 1) return;
-    if (minSelection > maxSelection) return;
+  const handleAddOptionGroup = async () => {
+    if (isCreating) return;
 
-    if (selectionType === "SINGLE" && maxSelection !== 1) {
-      return;
-    }
-
-    const id = `option-group-${Date.now()}`;
-
-    const newOptionGroup: OptionGroup = {
-      id,
+    const input = {
       name: name.trim(),
       selectionType,
       isRequired,
       minSelection,
       maxSelection,
-      sortOrder: optionGroups.length + 1,
-      restaurantId: RESTAURANT_ID,
-      optionItems: [],
     };
 
-    setOptionGroups((prev) => [...prev, newOptionGroup]);
+    if (!validateOptionGroupInput(input)) {
+      setErrorMessage("Invalid option group settings.");
+      return;
+    }
 
-    setMenuAssignments((prev) => ({
-      ...prev,
-      [id]: [],
-    }));
+    setIsCreating(true);
 
-    setName("");
-    setSelectionType("SINGLE");
-    setIsRequired(false);
-    setMinSelection(0);
-    setMaxSelection(1);
+    try {
+      setErrorMessage(null);
+
+      const createdGroup = await createAdminOptionGroup(RESTAURANT_ID, input);
+
+      setOptionGroups((prev) => [
+        ...prev,
+        {
+          ...createdGroup,
+          optionItems: [],
+        },
+      ]);
+
+      setMenuAssignments((prev) => ({
+        ...prev,
+        [createdGroup.id]: [],
+      }));
+
+      setName("");
+      setSelectionType("SINGLE");
+      setIsRequired(false);
+      setMinSelection(0);
+      setMaxSelection(1);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Failed to create option group.",
+      );
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   // -----------------------------
   // Start Option Group edit
   // -----------------------------
   const handleStartEdit = (group: OptionGroup) => {
+    if (isUpdating || deletingId !== null) return;
+
     setEditingId(group.id);
     setEditName(group.name);
     setEditSelectionType(group.selectionType);
@@ -161,45 +185,70 @@ const OptionManagement = () => {
 
   // -----------------------------
   // Save Option Group edit
-  // Temporary local-only handler
+  // Connected to PATCH API
   // -----------------------------
-  const handleSaveEdit = (id: string) => {
-    if (!editName.trim()) return;
-    if (editMinSelection < 0) return;
-    if (editMaxSelection < 1) return;
-    if (editMinSelection > editMaxSelection) return;
+  const handleSaveEdit = async (id: string) => {
+    if (isUpdating || deletingId !== null) return;
 
-    if (editSelectionType === "SINGLE" && editMaxSelection !== 1) {
+    const input = {
+      name: editName.trim(),
+      selectionType: editSelectionType,
+      isRequired: editIsRequired,
+      minSelection: editMinSelection,
+      maxSelection: editMaxSelection,
+    };
+
+    if (!validateOptionGroupInput(input)) {
+      setErrorMessage("Invalid option group settings.");
       return;
     }
 
-    setOptionGroups((prev) =>
-      prev.map((group) =>
-        group.id === id
-          ? {
-              ...group,
-              name: editName.trim(),
-              selectionType: editSelectionType,
-              isRequired: editIsRequired,
-              minSelection: editMinSelection,
-              maxSelection: editMaxSelection,
-            }
-          : group,
-      ),
-    );
+    setIsUpdating(true);
 
-    setEditingId(null);
-    setEditName("");
-    setEditSelectionType("SINGLE");
-    setEditIsRequired(false);
-    setEditMinSelection(0);
-    setEditMaxSelection(1);
+    try {
+      setErrorMessage(null);
+
+      const updatedGroup = await updateAdminOptionGroup(
+        RESTAURANT_ID,
+        id,
+        input,
+      );
+
+      setOptionGroups((prev) =>
+        prev.map((group) =>
+          group.id === id
+            ? {
+                ...group,
+                ...updatedGroup,
+                optionItems: group.optionItems,
+              }
+            : group,
+        ),
+      );
+
+      setEditingId(null);
+      setEditName("");
+      setEditSelectionType("SINGLE");
+      setEditIsRequired(false);
+      setEditMinSelection(0);
+      setEditMaxSelection(1);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Failed to update option group.",
+      );
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   // -----------------------------
   // Cancel Option Group edit
   // -----------------------------
   const handleCancelEdit = () => {
+    if (isUpdating) return;
+
     setEditingId(null);
     setEditName("");
     setEditSelectionType("SINGLE");
@@ -210,16 +259,45 @@ const OptionManagement = () => {
 
   // -----------------------------
   // Delete Option Group
-  // Temporary local-only handler
+  // Connected to DELETE API
   // -----------------------------
-  const handleDeleteOptionGroup = (id: string) => {
-    setOptionGroups((prev) => prev.filter((group) => group.id !== id));
+  const handleDeleteOptionGroup = async (id: string) => {
+    if (deletingId !== null || isUpdating) return;
 
-    setMenuAssignments((prev) => {
-      const next = { ...prev };
-      delete next[id];
-      return next;
-    });
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this option group?",
+    );
+
+    if (!confirmed) return;
+
+    setDeletingId(id);
+
+    try {
+      setErrorMessage(null);
+
+      await deleteAdminOptionGroup(RESTAURANT_ID, id);
+
+      // Update UI only after successful deletion
+      setOptionGroups((prev) => prev.filter((group) => group.id !== id));
+
+      setMenuAssignments((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
+
+      if (editingId === id) {
+        setEditingId(null);
+      }
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Failed to delete option group.",
+      );
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   // -----------------------------
@@ -336,7 +414,6 @@ const OptionManagement = () => {
   ) => {
     setMenuAssignments((prev) => {
       const assignedMenuIds = prev[optionGroupId] ?? [];
-
       const isAssigned = assignedMenuIds.includes(menuItemId);
 
       return {
@@ -427,7 +504,9 @@ const OptionManagement = () => {
           disabled={selectionType === "SINGLE"}
         />
 
-        <button onClick={handleAddOptionGroup}>Add Option Group</button>
+        <button onClick={handleAddOptionGroup} disabled={isCreating}>
+          {isCreating ? "Creating..." : "Add Option Group"}
+        </button>
       </div>
 
       <hr />
@@ -435,7 +514,6 @@ const OptionManagement = () => {
       {/* Option Group list */}
       {optionGroups.map((group) => {
         const groupItems = group.optionItems;
-
         const assignedMenuIds = menuAssignments[group.id] ?? [];
 
         return (
@@ -446,10 +524,12 @@ const OptionManagement = () => {
                   type="text"
                   value={editName}
                   onChange={(event) => setEditName(event.target.value)}
+                  disabled={isUpdating}
                 />
 
                 <select
                   value={editSelectionType}
+                  disabled={isUpdating}
                   onChange={(event) => {
                     const type = event.target.value as OptionSelectionType;
 
@@ -472,6 +552,7 @@ const OptionManagement = () => {
                   <input
                     type="checkbox"
                     checked={editIsRequired}
+                    disabled={isUpdating}
                     onChange={(event) => {
                       const required = event.target.checked;
 
@@ -494,6 +575,7 @@ const OptionManagement = () => {
                   min="0"
                   max={editSelectionType === "SINGLE" ? 1 : undefined}
                   value={editMinSelection}
+                  disabled={isUpdating}
                   onChange={(event) =>
                     setEditMinSelection(Number(event.target.value))
                   }
@@ -504,15 +586,22 @@ const OptionManagement = () => {
                   min="1"
                   max={editSelectionType === "SINGLE" ? 1 : undefined}
                   value={editMaxSelection}
+                  disabled={isUpdating || editSelectionType === "SINGLE"}
                   onChange={(event) =>
                     setEditMaxSelection(Number(event.target.value))
                   }
-                  disabled={editSelectionType === "SINGLE"}
                 />
 
-                <button onClick={() => handleSaveEdit(group.id)}>Save</button>
+                <button
+                  onClick={() => handleSaveEdit(group.id)}
+                  disabled={isUpdating}
+                >
+                  {isUpdating ? "Saving..." : "Save"}
+                </button>
 
-                <button onClick={handleCancelEdit}>Cancel</button>
+                <button onClick={handleCancelEdit} disabled={isUpdating}>
+                  Cancel
+                </button>
               </>
             ) : (
               <>
@@ -526,16 +615,29 @@ const OptionManagement = () => {
 
                 <p>Max Selection: {group.maxSelection}</p>
 
-                <button onClick={() => handleStartEdit(group)}>Edit</button>
+                <button
+                  onClick={() => handleStartEdit(group)}
+                  disabled={isUpdating || deletingId !== null}
+                >
+                  Edit
+                </button>
 
-                <button onClick={() => handleDeleteOptionGroup(group.id)}>
-                  Delete
+                <button
+                  onClick={() => handleDeleteOptionGroup(group.id)}
+                  disabled={isUpdating || deletingId !== null}
+                >
+                  {deletingId === group.id ? "Deleting..." : "Delete"}
                 </button>
 
                 <h3>Assigned Menus</h3>
 
                 {mockMenuItems.map((menuItem) => (
-                  <label key={menuItem.id} style={{ display: "block" }}>
+                  <label
+                    key={menuItem.id}
+                    style={{
+                      display: "block",
+                    }}
+                  >
                     <input
                       type="checkbox"
                       checked={assignedMenuIds.includes(menuItem.id)}

@@ -1,8 +1,18 @@
-// client/src/lib/api/adminApi.ts
-
 import type { Category, MenuItem } from "@/types/menu.types";
+
+import type {
+  CreateCategoryInput,
+  UpdateCategoryInput,
+  CreateMenuItemInput,
+  UpdateMenuItemInput,
+} from "@/types/admin.types";
+
 import { handleResponse } from "./shared/apiResponse";
 import { API_BASE_URL } from "./shared/apiConfig";
+
+// -----------------------------
+// Category
+// -----------------------------
 
 export const getAdminCategories = async (
   restaurantId: string,
@@ -16,12 +26,7 @@ export const getAdminCategories = async (
 
 export const createAdminCategory = async (
   restaurantId: string,
-  input: {
-    name: string;
-    description?: string | null;
-    sortOrder?: number;
-    isVisible?: boolean;
-  },
+  input: CreateCategoryInput,
 ): Promise<Category> => {
   const response = await fetch(
     `${API_BASE_URL}/api/admin/restaurants/${restaurantId}/categories`,
@@ -40,12 +45,7 @@ export const createAdminCategory = async (
 export const updateAdminCategory = async (
   restaurantId: string,
   categoryId: string,
-  input: {
-    name?: string;
-    description?: string | null;
-    sortOrder?: number;
-    isVisible?: boolean;
-  },
+  input: UpdateCategoryInput,
 ): Promise<Category> => {
   const response = await fetch(
     `${API_BASE_URL}/api/admin/restaurants/${restaurantId}/categories/${categoryId}`,
@@ -75,6 +75,10 @@ export const deleteAdminCategory = async (
   return handleResponse<Category>(response);
 };
 
+// -----------------------------
+// Menu Item
+// -----------------------------
+
 export const getAdminMenuItems = async (
   restaurantId: string,
 ): Promise<MenuItem[]> => {
@@ -85,19 +89,9 @@ export const getAdminMenuItems = async (
   return handleResponse<MenuItem[]>(response);
 };
 
-// Menu item
 export const createAdminMenuItem = async (
   restaurantId: string,
-  input: {
-    name: string;
-    description?: string | null;
-    price: number;
-    imageUrl?: string | null;
-    sortOrder?: number;
-    isVisible?: boolean;
-    isSoldOut?: boolean;
-    categoryId: string;
-  },
+  input: CreateMenuItemInput,
 ): Promise<MenuItem> => {
   const response = await fetch(
     `${API_BASE_URL}/api/admin/restaurants/${restaurantId}/menu-items`,
@@ -116,16 +110,7 @@ export const createAdminMenuItem = async (
 export const updateAdminMenuItem = async (
   restaurantId: string,
   menuItemId: string,
-  input: {
-    name?: string;
-    description?: string | null;
-    price?: number;
-    imageUrl?: string | null;
-    sortOrder?: number;
-    isVisible?: boolean;
-    isSoldOut?: boolean;
-    categoryId?: string;
-  },
+  input: UpdateMenuItemInput,
 ): Promise<MenuItem> => {
   const response = await fetch(
     `${API_BASE_URL}/api/admin/restaurants/${restaurantId}/menu-items/${menuItemId}`,
