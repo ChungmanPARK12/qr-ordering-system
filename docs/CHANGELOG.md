@@ -48,7 +48,7 @@
 - Tested CRUD endpoints and error responses with Postman
 - Still working on integrated in frontend
 
-## Week 6 – Day 3: Option Management API Integration
+## [2026-10-12] – Day 3: Option Management API Integration
 
 ### Completed
 
@@ -67,3 +67,30 @@
 - Implement MenuItem–OptionGroup assignments.
 
 **Note:** GET API is connected; CRUD operations still use local State.
+
+## [2026-10-13] - Admin OptionGroup CRUD Integration
+
+### Added
+
+- Integrated OptionGroup GET, POST, PATCH, and DELETE APIs.
+- Added shared frontend validation (`optionGroupValidation.ts`).
+- Added OptionGroup Create/Update types in `admin.types.ts`.
+- Added loading states, error handling, and delete confirmation.
+
+### Changed
+
+- Replaced local-only CRUD handlers with backend API calls.
+- Updated React state after successful API responses.
+- Preserved nested OptionItems during OptionGroup updates.
+
+### Tested
+
+- Verified GET, POST, PATCH, and DELETE operations.
+- Confirmed database persistence after page refresh.
+- Passed TypeScript validation (`npx tsc --noEmit`).
+
+### Pending
+
+- OptionItem CRUD integration.
+- MenuItem–OptionGroup assignment integration.
+- Dynamic Restaurant ID handling.
